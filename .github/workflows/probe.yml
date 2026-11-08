@@ -10,27 +10,24 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: 探测免费翻译服务
+      - name: 测真实描述翻译质量
         run: |
-          t() {
-            echo "===== $1 ====="
-            code=$(curl -s -o /tmp/b -w "%{http_code}" --max-time 25 "${@:2}" 2>/dev/null || echo "ERR")
-            echo "HTTP $code  bytes=$(wc -c < /tmp/b 2>/dev/null || echo 0)"
-            head -c 350 /tmp/b 2>/dev/null; echo; echo
+          tr_test() {
+            echo "===== $1 => $2 ====="
+            q=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))" "$3")
+            curl -s --max-time 25 "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=$2&dt=t&q=$q" \
+              | python3 -c "import json,sys;d=json.load(sys.stdin);print(''.join(s[0] for s in d[0] if s and s[0]))" 2>/dev/null || echo "FAIL"
+            echo
           }
 
-          t "1 google gtx" "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=hello%20world"
+          ZH="把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF）"
+          tr_test "GhostNote中文" "en" "$ZH"
+          tr_test "GhostNote中文" "ja" "$ZH"
+          tr_test "GhostNote中文" "zh-TW" "$ZH"
 
-          t "2 mymemory" "https://api.mymemory.translated.net/get?q=hello%20world&langpair=en|zh-TW"
-
-          t "3 lingva.ml" "https://lingva.ml/api/v1/en/zh/hello%20world"
-
-          t "4 libretranslate terraprint" -X POST "https://translate.terraprint.co/translate" \
-            -H "Content-Type: application/json" \
-            -d '{"q":"hello world","source":"en","target":"zh"}'
-
-          t "5 bing free" "https://api-edge.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hant&from=en" \
-            -H "Content-Type: application/json" \
-            -d '[{"Text":"hello world"}]'
+          EN="A frameless, transparent floating countdown / stopwatch / Pomodoro timer for Windows. Four display modes, four languages, in-app updates."
+          tr_test "nanotimer英文" "zh-CN" "$EN"
+          tr_test "nanotimer英文" "ja" "$EN"
+          tr_test "nanotimer英文" "zh-TW" "$EN"
 
           echo "===== done ====="
