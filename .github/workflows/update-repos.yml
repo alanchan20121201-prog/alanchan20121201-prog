@@ -14,8 +14,6 @@ on:
 
 permissions:
   contents: write
-  # 新倉庫的四語言描述由 GitHub Models 生成，用的是內建 GITHUB_TOKEN
-  models: read
 
 concurrency:
   group: update-readme
