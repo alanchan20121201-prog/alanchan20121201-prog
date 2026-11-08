@@ -69,5 +69,13 @@
     "ja": "軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語",
     "_source": "Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages",
     "_draft": true
+  },
+  "PixelPet": {
+    "zh-cn": "像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "zh-tw": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "en": "Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "ja": "ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "_source": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "_draft": true
   }
 }
