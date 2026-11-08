@@ -41,21 +41,14 @@ DESC_FILE = os.path.join(HERE, "descriptions.json")
 # 翻译走任意 OpenAI 兼容接口，默认智谱（免费、国内直连、无需信用卡）。
 # 想换供应商只改 LLM_BASE_URL 一个 secret，代码不用动。
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
-# 免费模型的名称会随版本迭代变化。启动时先问 /models 要真实可用列表，
-# 再按这个优先级挑（越靠前越可能是免费/便宜的小模型）。
-LLM_PREFERRED = [
+# 官方明确标注「输入免费、输出免费」的模型（2026-11 查证）。
+# 注意：flash 不等于免费 —— GLM-5.3-Flash 就是收费的，别被名字骗了。
+FREE_MODELS = {
     "glm-4.7-flash",
+    "glm-4.6v-flash",
     "glm-4-flash",
     "glm-4-flash-250414",
-    "glm-4-air",
-    "glm-4.7",
-    "glm-4.6v",
-    "glm-4-airx",
-    "glm-4",
-    "glm-5.3",
-    "glm-5.2",
-    "glm-5",
-]
+}
 
 PROMPT = """Translate this GitHub repository description into 4 locales.
 
@@ -197,25 +190,24 @@ def _fetch_models(key):
 
 
 def _pick_models(key):
-    """按「免费优先」的优先级，从账号实际可用的模型里排出尝试顺序。"""
+    """排尝试顺序：先真正免费的，没有再用便宜的小模型。返回 (列表, 是否免费)。"""
     available = _fetch_models(key)
     if not available:
-        return list(LLM_PREFERRED)
+        return sorted(FREE_MODELS), True
 
     print(f"      账号可用模型 {len(available)} 个：{', '.join(available[:12])}")
 
-    # 名字带 flash 的通常是免费版，不管版本号多新都优先用
-    free = [m for m in available if "flash" in m.lower()]
-    rest = [m for m in available if "flash" not in m.lower()]
+    lower = {m.lower(): m for m in available}
+    free = [lower[f] for f in FREE_MODELS if f in lower]
+    if free:
+        print(f"      命中官方免费模型：{free[0]}")
+        return free, True
 
-    free_lower = {m.lower() for m in free}
-    lower = {m.lower(): m for m in rest}
-    ordered = [
-        lower[p] for p in LLM_PREFERRED if p in lower and p not in free_lower
-    ]
-    # 优先级表没覆盖到的，补在后面
-    ordered += [m for m in rest if m.lower() not in LLM_PREFERRED]
-    return free + ordered
+    print("      注意：账号内没有官方免费模型，将走收费模型（单次约 0.0004 元）")
+    # 没有免费的就挑小模型：flash 后缀通常是最便宜的一档
+    flash = [m for m in available if "flash" in m.lower()]
+    rest = [m for m in available if "flash" not in m.lower()]
+    return flash + rest, False
 
 
 def translate(desc):
@@ -226,12 +218,11 @@ def translate(desc):
         return None
 
     prompt = PROMPT.format(desc=desc)
-    models = list(LLM_PREFERRED)
     override = os.environ.get("LLM_MODEL")
     if override:
-        models.insert(0, override)
+        models, is_free = [override], override.lower() in FREE_MODELS
     else:
-        models = _pick_models(key)
+        models, is_free = _pick_models(key)
 
     for model in models:
         raw = _chat(key, prompt, model)
@@ -254,7 +245,7 @@ def translate(desc):
                 break
             out[code] = re.sub(r"\s+", " ", v).strip()
         if out:
-            print(f"      使用模型 {model}")
+            print(f"      使用模型 {model}（{'免费' if is_free else '收费'}）")
             return out
 
     print("      所有候选模型都失败了")
