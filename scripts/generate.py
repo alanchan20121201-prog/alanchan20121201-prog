@@ -107,6 +107,22 @@ def fetch_all_repos():
     return repos
 
 
+# 只认 v1 / v1.2 / v1.2.3 这类；像 windows、exe 这种乱打的 tag 不当版本
+VERSION_RE = re.compile(r"^v?\d+(\.\d+){0,3}$", re.I)
+
+
+def fetch_version(full_name):
+    """只认「发布页」的最新正式 release；tag 名不像版本号（如 windows/exe）则忽略。"""
+    try:
+        rel = api_get(f"https://api.github.com/repos/{full_name}/releases/latest")
+    except Exception:
+        return None  # 没发过 release 会 404，正常
+    tag = ((rel or {}).get("tag_name") or "").strip()
+    if tag and VERSION_RE.match(tag):
+        return tag
+    return None
+
+
 def clean_desc(text):
     """去掉重复粘贴的描述、超长截断。不转义竖线，留给表格渲染处理。"""
     if not text:
@@ -367,31 +383,45 @@ def build_readme(repos, descs):
         for code in i18n.LANGS
     )
 
+    # 各语言表下方标注的生成时间（本地 UTC+8），让用户知道数据新鲜度
+    GEN_TIME = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8)))
+    GEN_LABEL = {
+        "zh-cn": "最后更新",
+        "zh-tw": "最後更新",
+        "en": "Last updated",
+        "ja": "最終更新",
+    }
+
+    # 版本号只查一次，四个语言表共用（不然同一仓库会重复请求四遍）
+    versions = {}
+    for r in repos:
+        versions[r["name"]] = fetch_version(r["full_name"]) or "—"
+
     blocks = []
     for code in i18n.LANGS:
         ui = i18n.UI[code]
         rows = []
         for i, r in enumerate(repos, 1):
             lang = f"`{r['language']}`" if r.get("language") else "—"
-            stars = r.get("stargazers_count", 0)
             # GitHub 对无法识别的授权文件会回 NOASSERTION，这种情况不显示
             spdx = (r.get("license") or {}).get("spdx_id") or ""
-            lic = f"`{spdx}`" if spdx and spdx != "NOASSERTION" else "—"
+            lic = f"`{spdx}`" if spdx and spdx != "NOASSERTION" else ""
+            # 许可证跟在项目名后面，紧凑又不占单独一列
+            name_cell = f"[{r['name']}]({r['html_url']}){' ' + lic if lic else ''}"
+            ver = versions[r["name"]]
             # 优先用已翻译的描述；没有则回落 GitHub 上的原文
             desc = (descs.get(r["name"]) or {}).get(code) or clean_desc(
                 r.get("description")
             )
             rows.append(
-                "| {i} | [{name}]({url}) | {desc} | {lang} | {stars} | {updated} | {lic} |".format(
+                "| {i} | {name} | {desc} | {lang} | {ver} | {updated} |".format(
                     i=i,
-                    name=r["name"],
-                    url=r["html_url"],
+                    name=name_cell,
                     desc=cell(desc),
                     lang=lang,
-                    stars=f"⭐ {stars}" if stars else "—",
+                    ver=f"`{ver}`" if ver != "—" else "—",
                     # 用 pushed_at（代码最后提交）而不是 updated_at（改描述、改设置都会刷新）
                     updated=short_date(r.get("pushed_at") or r.get("updated_at")),
-                    lic=lic,
                 )
             )
 
@@ -400,7 +430,9 @@ def build_readme(repos, descs):
             f'<a id="{code}"></a>\n\n'
             f"## {i18n.LANG_LABEL[code]}\n\n"
             f'{ui["tagline"].format(count=total)}\n\n'
-            f"{header}\n|:-:|:--|:--|:--|:-:|:--|:-:|\n" + "\n".join(rows)
+            f"{header}\n|:-:|:--|:--|:--|:-:|:--|\n"
+            + "\n".join(rows)
+            + f"\n\n> {GEN_LABEL[code]}：{GEN_TIME:%Y-%m-%d %H:%M}（UTC+8）"
         )
 
     sep = "\n\n---\n\n"
