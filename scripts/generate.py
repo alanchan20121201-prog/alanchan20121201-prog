@@ -4,13 +4,13 @@
 新仓库第一次出现时会自动翻译成四语言，结果记入 descriptions.json；
 翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
 
-译者用的是 Google 翻译的公开接口，不需要任何 API key，但有速率限制。
-实测：英文译中/日质量可用，中文译英/日偶尔生硬，重要项目建议手动润色。
+译者走 OpenAI 兼容接口，默认智谱 GLM-4-Flash（免费额度）。没配 LLM_API_KEY 时
+跳过翻译、直接显示原文，不会报错。
 
 本地运行（默认不翻译，避免污染数据）：
     GH_TOKEN=$(gh auth token) python scripts/generate.py
 启用自动翻译：
-    GH_TOKEN=$(gh auth token) AUTO_TRANSLATE=1 python scripts/generate.py
+    GH_TOKEN=$(gh auth token) LLM_API_KEY=xxx AUTO_TRANSLATE=1 python scripts/generate.py
 """
 
 import json
@@ -38,13 +38,10 @@ MAX_TRANSLATE_PER_RUN = 1
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# 译者用 Google Gemini 免费额度。没配 GEMINI_API_KEY 时跳过翻译，直接显示原文。
-GEMINI_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/{model}"
-    ":generateContent?key={key}"
-)
-# 按顺序探测，第一个能用的就固定下来
-GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+# 翻译走任意 OpenAI 兼容接口，默认智谱 GLM-4-Flash（免费、国内直连、无需信用卡）。
+# 想换供应商只改 LLM_BASE_URL / LLM_MODEL 两个 secret，代码不用动。
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
+LLM_MODEL = os.environ.get("LLM_MODEL", "glm-4-flash")
 
 PROMPT = """Translate this GitHub repository description into 4 locales.
 
@@ -143,56 +140,59 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _gemini(model, key, prompt):
-    """调 Gemini 单次生成，返回文本或 None。"""
+def _chat(key, prompt):
+    """调 OpenAI 兼容接口，返回文本或 None。"""
     body = json.dumps(
         {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 800},
+            "model": LLM_MODEL,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.3,
+            "max_tokens": 800,
         }
     ).encode()
     req = urllib.request.Request(
-        GEMINI_URL.format(model=model, key=key),
+        f"{LLM_BASE_URL}/chat/completions",
         data=body,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+        },
     )
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+        return data["choices"][0]["message"]["content"]
     except Exception as exc:
-        print(f"      {model}: {exc}")
+        print(f"      请求失败：{exc}")
         return None
 
 
 def translate(desc):
-    """一次请求拿到四语言结果；没配 key 或全部模型失败都返回 None。"""
-    key = os.environ.get("GEMINI_API_KEY")
+    """一次请求拿到四语言结果；没配 key 或解析失败都返回 None。"""
+    key = os.environ.get("LLM_API_KEY")
     if not key:
-        print("      未配置 GEMINI_API_KEY，跳过翻译")
+        print("      未配置 LLM_API_KEY，跳过翻译")
         return None
 
-    prompt = PROMPT.format(desc=desc)
-    for model in GEMINI_MODELS:
-        raw = _gemini(model, key, prompt)
-        if not raw:
-            continue
-        text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
-        try:
-            payload = json.loads(text)
-        except json.JSONDecodeError:
-            continue
+    raw = _chat(key, PROMPT.format(desc=desc))
+    if not raw:
+        return None
 
-        out, ok = {}, True
-        for code in i18n.LANGS:
-            v = payload.get(code)
-            if not isinstance(v, str) or not v.strip():
-                ok = False
-                break
-            out[code] = re.sub(r"\s+", " ", v).strip()
-        if ok:
-            return out
-    return None
+    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError:
+        print(f"      无法解析响应：{raw[:120]}")
+        return None
+
+    out = {}
+    for code in i18n.LANGS:
+        v = payload.get(code)
+        if not isinstance(v, str) or not v.strip():
+            print(f"      缺少语言 {code}")
+            return None
+        out[code] = re.sub(r"\s+", " ", v).strip()
+    return out
 
 
 def sync_translations(repos, descs):
