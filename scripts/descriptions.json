@@ -61,5 +61,13 @@
     "en": "Share text and files between PCs and phones on the same Wi-Fi - no login, no cloud, just open a URL",
     "ja": "同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要",
     "_source": "LAN Quick Share sends text and files between PCs and phones over the same Wi-Fi, no login, no cloud.區網快傳是免登入、免雲端的區域網路互傳工具，同一個 Wi-Fi 下，電腦間傳文字與任意檔案，手機瀏覽器開網址即可上傳接收。內建 UDP 搜尋、手動 IP、拖放傳檔與記錄，中英雙語介面，免安裝與安裝版。"
+  },
+  "ClipHist": {
+    "zh-cn": "轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言",
+    "zh-tw": "輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言",
+    "en": "Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages",
+    "ja": "軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語",
+    "_source": "Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages",
+    "_draft": true
   }
 }
