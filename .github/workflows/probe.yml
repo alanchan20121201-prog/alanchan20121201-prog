@@ -5,41 +5,32 @@ on:
 
 permissions:
   contents: read
-  models: read
 
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: 探测 Models API 各端点
-        env:
-          T: ${{ secrets.GITHUB_TOKEN }}
+      - name: 探测免费翻译服务
         run: |
-          probe() {
+          t() {
             echo "===== $1 ====="
-            code=$(curl -s -o /tmp/body -w "%{http_code}" --max-time 60 "${@:2}")
-            echo "HTTP $code  bytes=$(wc -c < /tmp/body)"
-            head -c 400 /tmp/body; echo; echo
+            code=$(curl -s -o /tmp/b -w "%{http_code}" --max-time 25 "${@:2}" 2>/dev/null || echo "ERR")
+            echo "HTTP $code  bytes=$(wc -c < /tmp/b 2>/dev/null || echo 0)"
+            head -c 350 /tmp/b 2>/dev/null; echo; echo
           }
 
-          probe "A: models.github.ai + gpt-4o-mini" \
-            -X POST "https://models.github.ai/inference/chat/completions" \
-            -H "Authorization: Bearer $T" -H "Content-Type: application/json" \
-            -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"What is 2+2? Only the number."}]}'
+          t "1 google gtx" "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t&q=hello%20world"
 
-          probe "B: models.github.ai + openai/gpt-4o-mini" \
-            -X POST "https://models.github.ai/inference/chat/completions" \
-            -H "Authorization: Bearer $T" -H "Content-Type: application/json" \
-            -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"What is 2+2? Only the number."}]}'
+          t "2 mymemory" "https://api.mymemory.translated.net/get?q=hello%20world&langpair=en|zh-TW"
 
-          probe "C: azure 旧端点" \
-            -X POST "https://models.inference.ai.azure.com/chat/completions" \
-            -H "Authorization: Bearer $T" -H "Content-Type: application/json" \
-            -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"What is 2+2? Only the number."}]}'
+          t "3 lingva.ml" "https://lingva.ml/api/v1/en/zh/hello%20world"
 
-          probe "D: catalog/models GET" \
-            "https://models.github.ai/catalog/models" \
-            -H "Authorization: Bearer $T"
+          t "4 libretranslate terraprint" -X POST "https://translate.terraprint.co/translate" \
+            -H "Content-Type: application/json" \
+            -d '{"q":"hello world","source":"en","target":"zh"}'
 
-          echo "===== E: 直接访问根路径 ====="
-          curl -s -i --max-time 30 "https://models.github.ai/" -H "Authorization: Bearer $T" | head -8
+          t "5 bing free" "https://api-edge.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hant&from=en" \
+            -H "Content-Type: application/json" \
+            -d '[{"Text":"hello world"}]'
+
+          echo "===== done ====="
