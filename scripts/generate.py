@@ -46,15 +46,13 @@ DESC_FILE = os.path.join(HERE, "descriptions.json")
 # 换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
 
-# 按优先级逐个尝试。
-# glm-4.7-flash 虽然是官方免费，但访问量太大、长期 429，实测很难抢到；
-# glm-4.6v-flash 是视觉模型，翻译生硬（把「區網快傳」译成「区網快伝」）。
-# 所以把稳定的 glm-5.3-flash 放首位 —— 单次约 0.0004 元，一个仓库四语言不到 0.002 元。
-LLM_MODELS = [
-    "glm-5.3-flash",   # 质量最好、最稳定，成本极低
-    "glm-4.7-flash",   # 官方免费，抢得到就省钱
-    "glm-4.6v-flash",  # 视觉模型，翻得糙，只作最后兜底
-]
+# 两档模型，都是官方免费的：
+#   QUALITY_MODEL 质量好，但访问量极大、经常 429（只静等，不硬撞，避免触发账户限流）
+#   DRAFT_MODEL   视觉模型，翻得糙但基本不挤，用来先出一版草稿保证有内容
+# 策略：新仓库先用草稿模型立即上表，之后每次定时任务试一次质量模型，
+# 抢到名额就自动覆盖成高质量版。全程零成本。
+QUALITY_MODEL = "glm-4.7-flash"
+DRAFT_MODEL = "glm-4.6v-flash"
 
 LANG_NAMES = {
     "zh-cn": "简体中文",
@@ -208,13 +206,14 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _chat(key, prompt, model, max_tokens=1200, retries=3):
+def _chat(key, prompt, model, max_tokens=1200, retries=1):
     """调 OpenAI 兼容接口，返回文本或 None。
 
     两个坑：
     1. 智谱 glm-5 系列是推理模型，先输出 reasoning_content 再给 content。
        max_tokens 太小会被思考吃光、content 变空串，所以给得宽松（答完即 stop）。
-    2. 免费模型（glm-4.7-flash 等）访问量大，经常回 429，等几秒再重试就有名额。
+    2. 免费模型（glm-4.7-flash）常年 429。这里**故意不重试**——密集重试会升级成
+       账户级限流（1302），反而更糟。429 就返回 None，交给下一次定时任务再试。
     """
     for attempt in range(retries):
         body = json.dumps(
@@ -249,33 +248,6 @@ def _chat(key, prompt, model, max_tokens=1200, retries=3):
     return None
 
 
-def _fetch_models(key):
-    """问服务商要真实可用的模型 id 列表；失败返回空列表。"""
-    try:
-        req = urllib.request.Request(
-            f"{LLM_BASE_URL}/models",
-            headers={"Authorization": f"Bearer {key}"},
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        return [m.get("id") for m in data.get("data", []) if m.get("id")]
-    except Exception as exc:
-        print(f"      拉取模型列表失败：{exc}")
-        return []
-
-
-def _pick_models(key):
-    """直接按 LLM_MODELS 的优先级返回。
-
-    /models 列表并不可靠——官方的免费模型（glm-4.7-flash）常常不出现在里面，
-    但实际可以调用。所以这里只拿列表打日志，不拿它做过滤。
-    """
-    available = _fetch_models(key) or []
-    if available:
-        print(f"      平台列出 {len(available)} 个模型")
-    return list(LLM_MODELS)
-
-
 def _translate_one(key, model, text, tlang):
     """让模型把 text 译成 tlang，返回干净译文或 None。"""
     raw = _chat(key, MT_PROMPT.format(tlang=tlang, text=text), model)
@@ -289,44 +261,61 @@ def _translate_one(key, model, text, tlang):
     return s or None
 
 
-def translate(desc):
-    """逐语言翻译（专用翻译模型不适合一次性吐 JSON）；全失败返回 None。"""
+def _translate_with(key, model, src):
+    """用指定模型把 src 翻成四语言，任一语言失败就整体放弃。"""
+    out = {}
+    for code in i18n.LANGS:
+        got = _translate_one(key, model, src, LANG_NAMES[code])
+        if not got:
+            print(f"      {model} 译 {LANG_NAMES[code]} 失败")
+            return None
+        out[code] = got
+    return out
+
+
+def translate(desc, quality_only=False):
+    """翻译成四语言，返回 (结果, 是否草稿)；失败返回 (None, False)。
+
+    先用质量模型，抢不到名额时（除非 quality_only）再用草稿模型兜底，
+    保证新仓库至少立刻有内容。
+    """
     key = os.environ.get("LLM_API_KEY")
     if not key:
         print("      未配置 LLM_API_KEY，跳过翻译")
-        return None
+        return None, False
 
     # 中英混排的描述先拆开，只拿单语的那段去翻，避免译出来还是半中半英
     src, _parts = pick_source(desc)
 
     override = os.environ.get("LLM_MODEL")
-    models = [override] if override else _pick_models(key)
+    if override:
+        out = _translate_with(key, override, src)
+        return (out, False) if out else (None, False)
 
-    for model in models:
-        out = {}
-        for code in i18n.LANGS:
-            got = _translate_one(key, model, src, LANG_NAMES[code])
-            if not got:
-                print(f"      {model} 译 {LANG_NAMES[code]} 失败，换下一个模型")
-                out = None
-                break
-            out[code] = got
-        if out:
-            print(f"      使用模型 {model}")
-            return out
+    out = _translate_with(key, QUALITY_MODEL, src)
+    if out:
+        print(f"      使用 {QUALITY_MODEL}（免费·高质量）")
+        return out, False
 
-    print("      所有候选模型都失败了")
-    return None
+    if quality_only:
+        return None, False  # 已有草稿，只等升级，不重复出草稿
+
+    out = _translate_with(key, DRAFT_MODEL, src)
+    if out:
+        print(f"      使用 {DRAFT_MODEL}（免费·草稿，后续自动升级）")
+        return out, True
+
+    return None, False
 
 
 def sync_translations(repos, descs):
-    """给缺少翻译、或 GitHub 上描述已改动的仓库补翻译。返回是否有改动。"""
+    """给缺少翻译、描述已改动、或是草稿状态的仓库做翻译。返回是否有改动。"""
     dirty = False
     budget = MAX_TRANSLATE_PER_RUN
 
     for r in repos:
         if budget <= 0:
-            print(f"    本轮翻译已达上限 {MAX_TRANSLATE_PER_RUN} 个，其余下次继续")
+            print(f"    本轮处理达上限 {MAX_TRANSLATE_PER_RUN} 个，其余下次继续")
             break
 
         name = r["name"]
@@ -335,19 +324,27 @@ def sync_translations(repos, descs):
             continue
 
         entry = descs.get(name) or {}
-        if entry.get("_source") == src and all(entry.get(c) for c in i18n.LANGS):
+        is_draft = bool(entry.get("_draft")) and entry.get("_source") == src
+        done = (
+            entry.get("_source") == src
+            and all(entry.get(c) for c in i18n.LANGS)
+            and not is_draft
+        )
+        if done:
             continue
 
-        print(f"    翻译 {name} ...")
-        got = translate(src)
+        print(f"    {'升级草稿' if is_draft else '翻译'} {name} ...")
+        got, draft = translate(src, quality_only=is_draft)
         budget -= 1
         if got:
             got["_source"] = src
+            if draft:
+                got["_draft"] = True
             descs[name] = got
             dirty = True
             print(f"      ✓ {got['en'][:50]}")
         else:
-            print("      ✗ 翻译失败，本次回落原文")
+            print("      · 本次未抢到名额，下次定时任务再试")
 
     return dirty
 
