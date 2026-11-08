@@ -4,7 +4,7 @@
 新仓库第一次出现时会自动翻译成四语言，结果记入 descriptions.json；
 翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
 
-译者走 OpenAI 兼容接口，默认智谱 GLM-4-Flash（免费额度）。没配 LLM_API_KEY 时
+译者走 OpenAI 兼容接口，默认硅基流动（9B 以下模型永久免费）。没配 LLM_API_KEY 时
 跳过翻译、直接显示原文，不会报错。
 
 本地运行（默认不翻译，避免污染数据）：
@@ -38,17 +38,21 @@ MAX_TRANSLATE_PER_RUN = 1
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# 翻译走任意 OpenAI 兼容接口，默认智谱（免费、国内直连、无需信用卡）。
-# 想换供应商只改 LLM_BASE_URL 一个 secret，代码不用动。
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
-# 官方明确标注「输入免费、输出免费」的模型（2026-11 查证）。
-# 注意：flash 不等于免费 —— GLM-5.3-Flash 就是收费的，别被名字骗了。
+# 翻译走任意 OpenAI 兼容接口，默认硅基流动（9B 以下模型永久免费、不限量）。
+# 换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.siliconflow.cn/v1")
+
+# 硅基流动明确永久免费的模型（9B 以下）。大小写不敏感匹配。
 FREE_MODELS = {
-    "glm-4.7-flash",
-    "glm-4.6v-flash",
-    "glm-4-flash",
-    "glm-4-flash-250414",
+    "qwen/qwen2.5-7b-instruct",
+    "qwen/qwen2-7b-instruct",
+    "qwen/qwen3-8b",
+    "thudm/glm-4-9b-chat",
+    "qwen/qwen2.5-1.5b-instruct",
 }
+
+# 免费名单没命中时，靠参数量猜哪些是小模型（小 = 便宜 / 免费）
+SMALL_HINTS = ("0.5b", "1.5b", "1.8b", "3b", "4b", "7b", "8b")
 
 PROMPT = """Translate this GitHub repository description into 4 locales.
 
@@ -195,19 +199,22 @@ def _pick_models(key):
     if not available:
         return sorted(FREE_MODELS), True
 
-    print(f"      账号可用模型 {len(available)} 个：{', '.join(available[:12])}")
+    print(f"      可用模型 {len(available)} 个：{', '.join(available[:10])}")
 
     lower = {m.lower(): m for m in available}
     free = [lower[f] for f in FREE_MODELS if f in lower]
     if free:
-        print(f"      命中官方免费模型：{free[0]}")
+        print(f"      命中永久免费模型：{free[0]}")
         return free, True
 
-    print("      注意：账号内没有官方免费模型，将走收费模型（单次约 0.0004 元）")
-    # 没有免费的就挑小模型：flash 后缀通常是最便宜的一档
-    flash = [m for m in available if "flash" in m.lower()]
-    rest = [m for m in available if "flash" not in m.lower()]
-    return flash + rest, False
+    # 名单没命中，就按参数量猜：小模型（7B/8B 等）基本都是免费或最便宜那档
+    small = [m for m in available if any(h in m.lower() for h in SMALL_HINTS)]
+    if small:
+        print(f"      未命中免费名单，改用小模型：{small[0]}")
+        return small, True
+
+    print("      注意：没有可用的小模型，将走收费模型")
+    return available, False
 
 
 def translate(desc):
