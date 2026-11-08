@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """扫描账号下的公开仓库，生成四语言 README.md。
 
-新仓库第一次出现时会调用 GitHub Models 自动翻译成四语言，结果记入
-descriptions.json；翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
+新仓库第一次出现时会自动翻译成四语言，结果记入 descriptions.json；
+翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
+
+译者用的是 Google 翻译的公开接口，不需要任何 API key，但有速率限制。
+实测：英文译中/日质量可用，中文译英/日偶尔生硬，重要项目建议手动润色。
 
 本地运行（默认不翻译，避免污染数据）：
     GH_TOKEN=$(gh auth token) python scripts/generate.py
@@ -14,6 +17,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -29,32 +34,17 @@ OUT_FILE = "README.md"
 EXCLUDE = {USERNAME.lower(), ".github"}
 
 MAX_DESC = 110
-MAX_TRANSLATE_PER_RUN = 10
+MAX_TRANSLATE_PER_RUN = 5
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-MODELS_ENDPOINT = "https://models.github.ai/inference/chat/completions"
-MODEL = "openai/gpt-4o-mini"
-
-PROMPT = """Translate this GitHub repository description into 4 locales.
-
-Repository: {name}
-Original description: {desc}
-
-Locales:
-- zh-cn: Simplified Chinese
-- zh-tw: Traditional Chinese (Taiwan)
-- en: English
-- ja: Japanese
-
-Rules:
-- Under 100 characters
-- Keep technical terms, product names and version numbers unchanged
-- Describe what it does, no marketing fluff
-- Do not invent facts absent from the original
-
-Return ONLY a JSON object with keys "zh-cn", "zh-tw", "en", "ja". No markdown fence."""
+# Google 翻译的公开接口：无需 API key，但有速率限制，所以串行 + 退避重试。
+GTX = (
+    "https://translate.googleapis.com/translate_a/single"
+    "?client=gtx&sl=auto&tl={tl}&dt=t&q={q}"
+)
+TL = {"zh-cn": "zh-CN", "zh-tw": "zh-TW", "en": "en", "ja": "ja"}
 
 
 def token():
@@ -135,68 +125,37 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _normalize(payload):
-    """校验四语言齐全，返回干净的 dict 或 None。"""
+def _gtx(text, tl, retries=3):
+    """调 Google 翻译公开接口，返回译文；失败返回 None。"""
+    url = GTX.format(tl=tl, q=urllib.parse.quote(text))
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "Mozilla/5.0"}
+            )
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            parts = [seg[0] for seg in payload[0] if seg and seg[0]]
+            out = "".join(parts).strip()
+            if out:
+                return out
+        except Exception as exc:
+            if attempt == retries - 1:
+                print(f"      {tl} 失败：{exc}")
+            time.sleep(1.5 * (attempt + 1))
+    return None
+
+
+def translate(desc):
+    """逐语言翻译，任一语言失败则整体放弃（调用方回落原文）。"""
     out = {}
     for code in i18n.LANGS:
-        v = payload.get(code)
-        if not isinstance(v, str) or not v.strip():
+        got = _gtx(desc, TL[code])
+        if not got:
             return None
-        out[code] = re.sub(r"\s+", " ", v).strip()
+        out[code] = re.sub(r"\s+", " ", got).strip()
+        time.sleep(0.6)  # 串行限速，避免被 Google 挡掉
     return out
-
-
-def translate(name, desc):
-    """调 GitHub Models 翻译，任何失败都返回 None（调用方回落原文）。"""
-    tk = token()
-    if not tk:
-        return None
-
-    body = json.dumps(
-        {
-            "model": MODEL,
-            "messages": [
-                {"role": "user", "content": PROMPT.format(name=name, desc=desc)}
-            ],
-            "temperature": 0.3,
-            "max_tokens": 600,
-        }
-    ).encode()
-
-    req = urllib.request.Request(
-        MODELS_ENDPOINT,
-        data=body,
-        headers={
-            "Authorization": f"Bearer {tk}",
-            "Content-Type": "application/json",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            raw = resp.read().decode("utf-8").strip()
-    except Exception as exc:  # 网络、鉴权、配额、模型名错误统统降级
-        print(f"    请求失败：{exc}")
-        return None
-
-    # 正常是 OpenAI 格式；也兼容直接返回纯文本 / 被反引号包裹的情况
-    text = raw
-    try:
-        payload = json.loads(raw)
-        if isinstance(payload, dict) and "choices" in payload:
-            text = payload["choices"][0]["message"]["content"]
-        elif isinstance(payload, dict):
-            got = _normalize(payload)
-            if got:
-                return got
-    except json.JSONDecodeError:
-        pass
-
-    text = text.strip()
-    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text).strip()
-    try:
-        return _normalize(json.loads(text))
-    except (json.JSONDecodeError, AttributeError):
-        return None
 
 
 def sync_translations(repos, descs):
@@ -219,7 +178,7 @@ def sync_translations(repos, descs):
             continue
 
         print(f"    翻译 {name} ...")
-        got = translate(name, src)
+        got = translate(src)
         budget -= 1
         if got:
             got["_source"] = src
