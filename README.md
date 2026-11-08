@@ -22,4 +22,4 @@
 
 ---
 
-<sub>本清單由 GitHub Actions 每小時自動同步，最後更新於 2026-11-08 07:24 UTC · <a href="https://github.com/alanchan20121201-prog/alanchan20121201-prog/actions">執行記錄</a></sub>
+<sub>本清單由 GitHub Actions 每 15 分鐘自動同步，最後更新於 2026-11-08 07:26 UTC · <a href="https://github.com/alanchan20121201-prog/alanchan20121201-prog/actions">執行記錄</a></sub>

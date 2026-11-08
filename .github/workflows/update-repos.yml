@@ -6,9 +6,9 @@ on:
     branches: [main]
     paths-ignore:
       - README.md
-  # 其他倉庫的提交無法跨倉庫觸發，靠每小時掃描兜底
+  # 其他倉庫的提交無法跨倉庫觸發，靠定時掃描兜底
   schedule:
-    - cron: "0 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:

@@ -113,7 +113,7 @@ def build_readme(repos):
 
 ---
 
-<sub>本清單由 GitHub Actions 每小時自動同步，最後更新於 {stamp} · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">執行記錄</a></sub>
+<sub>本清單由 GitHub Actions 每 15 分鐘自動同步，最後更新於 {stamp} · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">執行記錄</a></sub>
 """
 
 
@@ -121,7 +121,12 @@ def main():
     repos = [
         r
         for r in fetch_all_repos()
-        if r["name"].lower() not in EXCLUDE and not r.get("fork")
+        if r["name"].lower() not in EXCLUDE
+        # 过滤 fork
+        and not r.get("fork")
+        # 只收公开仓库：带 token 请求 /users/{name}/repos 会返回自己的 private 仓库，
+        # 一旦上榜就等于把仓库名公开泄露，务必保留这道判断
+        and not r.get("private")
     ]
     repos.sort(key=lambda r: r.get("updated_at") or "", reverse=True)
 
