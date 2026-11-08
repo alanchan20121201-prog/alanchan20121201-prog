@@ -7,10 +7,16 @@ on:
     paths-ignore:
       - README.md
       - scripts/descriptions.json
-  # 其他倉庫的提交無法跨倉庫觸發，靠定時掃描兜底
+  # 第二層兜底：GitHub 自己的 cron 會延遲甚至漏跑，但它能保證鏈條斷了之後自動重啟
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      wait:
+        description: "先等待約 14 分鐘再執行（自觸發鏈模式，無需手動填）"
+        required: false
+        default: "false"
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +29,12 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
+      # 自觸發鏈：上一次跑完會派發下一次（wait=true），先睡掉間隔，保證 ~15 分鐘一輪。
+      # GitHub 的 schedule 不保證準時，實測曾漏跑 90 分鐘，所以主節奏交給鏈條。
+      - name: 鏈條等待（保持約 15 分鐘間隔）
+        if: github.event.inputs.wait == 'true'
+        run: sleep 840
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -32,7 +44,7 @@ jobs:
       - name: 生成 README
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 新仓库的四语言描述由腾讯 Hunyuan-MT-7B 翻译（硅基流动免费模型）
+          # 新仓库的四语言描述由智谱免费模型翻译（glm-4.7-flash 优先，抢不到用草稿模型兜底）
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           AUTO_TRANSLATE: "1"
         run: python scripts/generate.py
@@ -47,4 +59,29 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md scripts/descriptions.json
           git commit -m "chore: 自動同步專案清單 [skip ci]"
+          # 遠端可能被別的觸發同時推進（並發掃描、本地 API 提交），先對齊再推
+          git pull --rebase --autostash origin main
           git push
+
+      # 不論成敗都派發下一次，避免鏈條因單次失敗而斷掉。
+      # GITHUB_TOKEN 不能觸發 workflow（防遞迴），所以用細粒度 PAT（僅 Actions 寫權限）。
+      - name: 觸發下一次掃描
+        if: always()
+        env:
+          PAT: ${{ secrets.WORKFLOW_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "未配置 WORKFLOW_PAT，跳過自觸發；僅靠 cron 定時掃描"
+            exit 0
+          fi
+          code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer $PAT" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/update-repos.yml/dispatches" \
+            -d '{"ref":"main","inputs":{"wait":"true"}}')
+          echo "dispatch HTTP $code"
+          if [ "$code" != "204" ]; then
+            echo "派發失敗，回應："
+            cat /tmp/resp.txt
+            exit 0
+          fi
