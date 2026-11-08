@@ -41,13 +41,20 @@ DESC_FILE = os.path.join(HERE, "descriptions.json")
 # 翻译走任意 OpenAI 兼容接口，默认智谱（免费、国内直连、无需信用卡）。
 # 想换供应商只改 LLM_BASE_URL 一个 secret，代码不用动。
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
-# 免费模型的名称会随版本迭代变化，按顺序探测，能用哪个算哪个
-LLM_MODELS = [
+# 免费模型的名称会随版本迭代变化。启动时先问 /models 要真实可用列表，
+# 再按这个优先级挑（越靠前越可能是免费/便宜的小模型）。
+LLM_PREFERRED = [
     "glm-4.7-flash",
     "glm-4-flash",
     "glm-4-flash-250414",
     "glm-4-air",
+    "glm-4.7",
+    "glm-4.6v",
+    "glm-4-airx",
     "glm-4",
+    "glm-5.3",
+    "glm-5.2",
+    "glm-5",
 ]
 
 PROMPT = """Translate this GitHub repository description into 4 locales.
@@ -174,8 +181,8 @@ def _chat(key, prompt, model):
         return None
 
 
-def _list_models(key):
-    """全部模型都失败时，把账号实际可用的模型打出来，方便定位。"""
+def _fetch_models(key):
+    """问服务商要真实可用的模型 id 列表；失败返回空列表。"""
     try:
         req = urllib.request.Request(
             f"{LLM_BASE_URL}/models",
@@ -183,10 +190,25 @@ def _list_models(key):
         )
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-        ids = [m.get("id") for m in data.get("data", []) if m.get("id")]
-        print(f"      可用模型：{', '.join(ids[:25]) or '（空）'}")
+        return [m.get("id") for m in data.get("data", []) if m.get("id")]
     except Exception as exc:
-        print(f"      获取模型列表也失败了：{exc}")
+        print(f"      拉取模型列表失败：{exc}")
+        return []
+
+
+def _pick_models(key):
+    """按「免费优先」的优先级，从账号实际可用的模型里排出尝试顺序。"""
+    available = _fetch_models(key)
+    if not available:
+        return list(LLM_PREFERRED)
+
+    print(f"      账号可用模型 {len(available)} 个：{', '.join(available[:12])}")
+
+    lower = {m.lower(): m for m in available}
+    ordered = [lower[p] for p in LLM_PREFERRED if p in lower]
+    # 优先级表里没覆盖到的，补在后面
+    ordered += [m for m in available if m.lower() not in LLM_PREFERRED][:2]
+    return ordered or available[:3]
 
 
 def translate(desc):
@@ -197,10 +219,12 @@ def translate(desc):
         return None
 
     prompt = PROMPT.format(desc=desc)
-    models = list(LLM_MODELS)
+    models = list(LLM_PREFERRED)
     override = os.environ.get("LLM_MODEL")
     if override:
         models.insert(0, override)
+    else:
+        models = _pick_models(key)
 
     for model in models:
         raw = _chat(key, prompt, model)
@@ -226,7 +250,7 @@ def translate(desc):
             print(f"      使用模型 {model}")
             return out
 
-    _list_models(key)
+    print("      所有候选模型都失败了")
     return None
 
 
