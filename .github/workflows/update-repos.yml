@@ -23,7 +23,9 @@ permissions:
 
 concurrency:
   group: update-readme
-  cancel-in-progress: true
+  # 不能设 true：新 run（含鏈條派發的）一進來就會取消還在收尾的舊 run，顯示成 cancelled，
+  # 極端情況還會把未提交的工作一起殺掉。排隊串行更安全，掃描本身是冪等的，多跑一次無害。
+  cancel-in-progress: false
 
 jobs:
   update:
