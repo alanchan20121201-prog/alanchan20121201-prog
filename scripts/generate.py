@@ -11,7 +11,7 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime
 
 # 允许从任意工作目录运行本脚本
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -84,7 +84,6 @@ def short_date(iso):
 
 
 def build_readme(repos):
-    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     total = len(repos)
 
     # GitHub 会给 HTML 锚点 id 加上 user-content- 前缀，链接必须照着写
@@ -143,7 +142,7 @@ def build_readme(repos):
 
 ---
 
-<sub>Auto-synced every 15 min by GitHub Actions · 每 15 分鐘自動同步 · 最后更新 {stamp} · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">Actions</a></sub>
+<sub>Auto-synced every 15 min by GitHub Actions · 每 15 分鐘自動同步 · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">Actions</a></sub>
 """
 
 
