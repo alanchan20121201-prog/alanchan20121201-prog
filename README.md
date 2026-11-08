@@ -18,7 +18,7 @@
 
 | # | 项目 | 说明 | 语言 | ⭐ | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | — | 2026-11-08 |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 制作的游戏 | `C#` | ⭐ 1 | 2026-11-08 |
 | 3 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言 | `C` | ⭐ 1 | 2026-11-08 |
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
@@ -40,7 +40,7 @@
 
 | # | 專案 | 說明 | 語言 | ⭐ | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | — | 2026-11-08 |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 製作的遊戲 | `C#` | ⭐ 1 | 2026-11-08 |
 | 3 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言 | `C` | ⭐ 1 | 2026-11-08 |
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句話像浮水印般刻在桌面上，永遠置頂、滑鼠穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
@@ -62,7 +62,7 @@ Self-built tools and experiments · All open source · 11 in total
 
 | # | Project | Description | Language | ⭐ | Updated |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | — | 2026-11-08 |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | A game built with AI | `C#` | ⭐ 1 | 2026-11-08 |
 | 3 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages | `C` | ⭐ 1 | 2026-11-08 |
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | Etch a line of text onto your desktop like a watermark — always on top, click-through (.NET 8 + WPF) | `C#` | ⭐ 1 | 2026-11-08 |
@@ -84,7 +84,7 @@ Self-built tools and experiments · All open source · 11 in total
 
 | # | プロジェクト | 説明 | 言語 | ⭐ | 更新日 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | — | 2026-11-08 |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | AI を使って制作したゲーム | `C#` | ⭐ 1 | 2026-11-08 |
 | 3 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語 | `C` | ⭐ 1 | 2026-11-08 |
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | テキストを透かしのようにデスクトップに刻む Windows ツール。常に最前面、マウス貫通（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
