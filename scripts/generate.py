@@ -4,8 +4,8 @@
 新仓库第一次出现时会自动翻译成四语言，结果记入 descriptions.json；
 翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
 
-译者走 ModelScope（魔搭）的免费推理接口，每日 2000 次调用，按翻译质量自动
-降级模型。没配 LLM_API_KEY 时跳过翻译、直接显示原文，不会报错。
+译者走硅基流动的免费接口，首选腾讯 Hunyuan-MT-7B（专用机器翻译模型，WMT25 冠军），
+失败自动降级到其他免费模型。没配 LLM_API_KEY 时跳过翻译、直接显示原文，不会报错。
 
 本地运行（默认不翻译，避免污染数据）：
     GH_TOKEN=$(gh auth token) python scripts/generate.py
@@ -38,40 +38,27 @@ MAX_TRANSLATE_PER_RUN = 1
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# 翻译走 ModelScope（魔搭）的免费推理 API：每日 2000 次调用，覆盖 Qwen / DeepSeek / GLM
-# 等大模型。换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
-LLM_BASE_URL = os.environ.get(
-    "LLM_BASE_URL", "https://api-inference.modelscope.cn/v1"
-)
+# 翻译走硅基流动。首选腾讯 Hunyuan-MT-7B —— 专用机器翻译模型（WMT25 冠军），
+# 官方标注完全免费。换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.siliconflow.cn/v1")
 
-# 按翻译质量从高到低排，逐个尝试。前一个超时或限流会自动降级到下一个，
-# 所以慢但最强的大模型放前面，稳定的放在后面兜底。
+# 按优先级逐个尝试，前面的失败（超时/限流）自动降级
 LLM_MODELS = [
-    "Qwen/Qwen3.5-397B-A17B",
-    "deepseek-ai/DeepSeek-V4-Pro-0813",
-    "Qwen/Qwen3.5-122B-A10B",
-    "Qwen/Qwen3.5-35B-A3B",
-    "Qwen/Qwen3.5-27B",
-    "ZhipuAI/GLM-4.7-Flash",
+    "tencent/Hunyuan-MT-7B",  # 专用翻译模型，免费
+    "XingChenAGI/Xing4.0-29B",  # 通用模型兜底，也免费
 ]
 
-PROMPT = """Translate this GitHub repository description into 4 locales.
+LANG_NAMES = {
+    "zh-cn": "简体中文",
+    "zh-tw": "繁体中文",
+    "en": "英语",
+    "ja": "日语",
+}
 
-Original description: {desc}
+# 专用翻译模型不需要 JSON 输出，逐语言调用命中率更高
+MT_PROMPT = """把下面的文本翻译成{tlang}，只输出译文本身，不要解释，不要加引号。
 
-Locales:
-- zh-cn: Simplified Chinese
-- zh-tw: Traditional Chinese (Taiwan)
-- en: English
-- ja: Japanese
-
-Rules:
-- Under 100 characters
-- Keep technical terms, product names and version numbers unchanged
-- Describe what it does, no marketing fluff
-- Do not invent facts absent from the original
-
-Return ONLY a JSON object with keys "zh-cn", "zh-tw", "en", "ja". No markdown fence."""
+{text}"""
 
 
 def token():
@@ -152,14 +139,14 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _chat(key, prompt, model):
+def _chat(key, prompt, model, max_tokens=400):
     """调 OpenAI 兼容接口，返回文本或 None。"""
     body = json.dumps(
         {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.3,
-            "max_tokens": 800,
+            "max_tokens": max_tokens,
         }
     ).encode()
     req = urllib.request.Request(
@@ -212,39 +199,40 @@ def _pick_models(key):
     return available[:3]
 
 
+def _translate_one(key, model, text, tlang):
+    """让模型把 text 译成 tlang，返回干净译文或 None。"""
+    raw = _chat(key, MT_PROMPT.format(tlang=tlang, text=text), model, max_tokens=400)
+    if not raw:
+        return None
+    s = raw.strip()
+    # 有些模型会回「译文：xxx」或者包一层引号，清掉
+    s = re.sub(r"^(译文|翻译|Translation)\s*[:：]\s*", "", s, flags=re.I)
+    s = s.strip().strip('"').strip("「」").strip()
+    s = re.sub(r"\s+", " ", s).strip()
+    return s or None
+
+
 def translate(desc):
-    """依次试候选模型，第一个成功的返回；全失败则返回 None。"""
+    """逐语言翻译（专用翻译模型不适合一次性吐 JSON）；全失败返回 None。"""
     key = os.environ.get("LLM_API_KEY")
     if not key:
         print("      未配置 LLM_API_KEY，跳过翻译")
         return None
 
-    prompt = PROMPT.format(desc=desc)
     override = os.environ.get("LLM_MODEL")
     models = [override] if override else _pick_models(key)
 
     for model in models:
-        raw = _chat(key, prompt, model)
-        if not raw:
-            continue
-
-        text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
-        try:
-            payload = json.loads(text)
-        except json.JSONDecodeError:
-            print(f"      {model} 返回的不是 JSON：{raw[:100]}")
-            continue
-
         out = {}
         for code in i18n.LANGS:
-            v = payload.get(code)
-            if not isinstance(v, str) or not v.strip():
-                print(f"      {model} 缺少语言 {code}")
+            got = _translate_one(key, model, desc, LANG_NAMES[code])
+            if not got:
+                print(f"      {model} 译 {LANG_NAMES[code]} 失败，换下一个模型")
                 out = None
                 break
-            out[code] = re.sub(r"\s+", " ", v).strip()
+            out[code] = got
         if out:
-            print(f"      使用模型 {model}（ModelScope 免费额度内）")
+            print(f"      使用模型 {model}")
             return out
 
     print("      所有候选模型都失败了")
