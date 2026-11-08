@@ -54,5 +54,12 @@
     "en": "Minimalist single-file Chinese–English bidirectional translation page with one-click copy and quick clear",
     "ja": "ミニマルな単一ファイルの中英双方向翻訳ページ。ワンクリックコピー、クイッククリア対応",
     "_source": "这是一个极简风格的单档案中英双向翻译网页，支援中英介面自由切换、一键复制与快捷清空功能这是一个极简风格的单档案中英双向翻译网页，支援中英介面自由切换、一键复制与快捷清空功能。This is a minimalist, single-file Chinese-English bidirectional translation webpage that supports seamless switching between Chinese and English interfaces, one-click copying, and a quick clear function. This is a minimalist, single-file Chinese-English bidirectional translation webpage that supports seamless switching between Chinese and English interfaces, one-click copying, and a quick clear function."
+  },
+  "Toolbox": {
+    "zh-cn": "这是一个多功能的工具箱。",
+    "zh-tw": "這是一個多功能的工具箱。",
+    "en": "This is a versatile toolbox.",
+    "ja": "これは多機能なツールボックスです。",
+    "_source": "This is a versatile toolbox."
   }
 }
