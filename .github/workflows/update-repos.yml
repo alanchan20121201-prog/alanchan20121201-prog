@@ -32,6 +32,8 @@ jobs:
       - name: 生成 README
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 新仓库的四语言描述由 Gemini 翻译；没配这个 secret 时直接显示原文
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AUTO_TRANSLATE: "1"
         run: python scripts/generate.py
 
