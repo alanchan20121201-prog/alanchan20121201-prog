@@ -54,5 +54,12 @@
     "en": "This is a versatile toolbox.",
     "ja": "これは多用途のツールボックスです。",
     "_source": "This is a versatile toolbox."
+  },
+  "File-Transfer": {
+    "zh-cn": "免登录、免云端的局域网互传工具。同一 Wi-Fi 下电脑与手机互传文字和任意文件，手机浏览器打开网址即可收发",
+    "zh-tw": "免登入、免雲端的區域網路互傳工具。同一 Wi-Fi 下電腦與手機互傳文字和任意檔案，手機瀏覽器開啟網址即可收發",
+    "en": "Share text and files between PCs and phones on the same Wi-Fi - no login, no cloud, just open a URL",
+    "ja": "同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要",
+    "_source": "LAN Quick Share sends text and files between PCs and phones over the same Wi-Fi, no login, no cloud.區網快傳是免登入、免雲端的區域網路互傳工具，同一個 Wi-Fi 下，電腦間傳文字與任意檔案，手機瀏覽器開網址即可上傳接收。內建 UDP 搜尋、手動 IP、拖放傳檔與記錄，中英雙語介面，免安裝與安裝版。"
   }
 }
