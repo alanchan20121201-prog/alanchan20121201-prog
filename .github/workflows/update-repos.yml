@@ -1,11 +1,12 @@
 name: 更新專案清單
 
 on:
-  # 本倉庫有提交時立即同步（README.md 由 bot 寫入，忽略以免自我循環）
+  # 本倉庫有提交時立即同步（README.md / descriptions.json 由 bot 寫入，忽略以免自我循環）
   push:
     branches: [main]
     paths-ignore:
       - README.md
+      - scripts/descriptions.json
   # 其他倉庫的提交無法跨倉庫觸發，靠定時掃描兜底
   schedule:
     - cron: "*/15 * * * *"
@@ -13,6 +14,8 @@ on:
 
 permissions:
   contents: write
+  # 新倉庫的四語言描述由 GitHub Models 生成，用的是內建 GITHUB_TOKEN
+  models: read
 
 concurrency:
   group: update-readme
@@ -31,16 +34,17 @@ jobs:
       - name: 生成 README
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_TRANSLATE: "1"
         run: python scripts/generate.py
 
       - name: 提交變更
         run: |
-          if [ -z "$(git status --porcelain README.md)" ]; then
+          if [ -z "$(git status --porcelain README.md scripts/descriptions.json)" ]; then
             echo "清單無變更，跳過提交"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md
+          git add README.md scripts/descriptions.json
           git commit -m "chore: 自動同步專案清單 [skip ci]"
           git push

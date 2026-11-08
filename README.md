@@ -24,7 +24,7 @@
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 5 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) | Windows 托盘小工具：Ctrl+Alt+L 一键把指定窗口锁定置顶，带高亮边框 | `C#` | ⭐ 1 | 2026-11-07 |
 | 6 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 制作的游戏 | `C#` | ⭐ 1 | 2026-10-11 |
-| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 多功能工具箱 | — | ⭐ 1 | 2026-09-28 |
+| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-09-28 |
 | 8 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登录、免云端的局域网互传工具，同一 Wi-Fi 下电脑与手机互传文字和任意文件 | `Python` | ⭐ 1 | 2026-09-27 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) | 极简风格的单文件中英双向翻译网页，支持界面切换、一键复制与快速清空 | `HTML` | ⭐ 1 | 2026-09-25 |
 
@@ -44,7 +44,7 @@
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句話像浮水印般刻在桌面上，永遠置頂、滑鼠穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 5 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) | Windows 托盤小工具：Ctrl+Alt+L 一鍵把指定視窗鎖定置頂，帶高亮邊框 | `C#` | ⭐ 1 | 2026-11-07 |
 | 6 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 製作的遊戲 | `C#` | ⭐ 1 | 2026-10-11 |
-| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 多功能工具箱 | — | ⭐ 1 | 2026-09-28 |
+| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-09-28 |
 | 8 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登入、免雲端的區域網路互傳工具，同一 Wi-Fi 下電腦與手機互傳文字和任意檔案 | `Python` | ⭐ 1 | 2026-09-27 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) | 極簡風格的單檔案中英雙向翻譯網頁，支援介面切換、一鍵複製與快速清空 | `HTML` | ⭐ 1 | 2026-09-25 |
 
@@ -64,7 +64,7 @@ Self-built tools and experiments · All open source · 9 in total
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | Etch a line of text onto your desktop like a watermark — always on top, click-through (.NET 8 + WPF) | `C#` | ⭐ 1 | 2026-11-08 |
 | 5 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) | Tray utility — press Ctrl+Alt+L to pin any window on top, with a highlight border | `C#` | ⭐ 1 | 2026-11-07 |
 | 6 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | A game built with AI | `C#` | ⭐ 1 | 2026-10-11 |
-| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | A versatile toolbox | — | ⭐ 1 | 2026-09-28 |
+| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-09-28 |
 | 8 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | Share text and files between PCs and phones on the same Wi-Fi — no login, no cloud, no install | `Python` | ⭐ 1 | 2026-09-27 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) | Minimalist single-file Chinese–English bidirectional translation page with one-click copy and quick clear | `HTML` | ⭐ 1 | 2026-09-25 |
 
@@ -84,7 +84,7 @@ Self-built tools and experiments · All open source · 9 in total
 | 4 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | テキストを透かしのようにデスクトップに刻む Windows ツール。常に最前面、マウス貫通（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 5 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) | 常駐ツール。Ctrl+Alt+L で任意のウィンドウを最前面に固定、ハイライト枠付き | `C#` | ⭐ 1 | 2026-11-07 |
 | 6 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | AI を使って制作したゲーム | `C#` | ⭐ 1 | 2026-10-11 |
-| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 多機能ツールボックス | — | ⭐ 1 | 2026-09-28 |
+| 7 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-09-28 |
 | 8 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要 | `Python` | ⭐ 1 | 2026-09-27 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) | ミニマルな単一ファイルの中英双方向翻訳ページ。ワンクリックコピー、クイッククリア対応 | `HTML` | ⭐ 1 | 2026-09-25 |
 

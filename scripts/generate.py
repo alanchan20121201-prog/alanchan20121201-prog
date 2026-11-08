@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""扫描账号下的公开仓库，生成 README.md 总表。
+"""扫描账号下的公开仓库，生成四语言 README.md。
 
-本地运行：
+新仓库第一次出现时会调用 GitHub Models 自动翻译成四语言，结果记入
+descriptions.json；翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
+
+本地运行（默认不翻译，避免污染数据）：
     GH_TOKEN=$(gh auth token) python scripts/generate.py
+启用自动翻译：
+    GH_TOKEN=$(gh auth token) AUTO_TRANSLATE=1 python scripts/generate.py
 """
 
 import json
 import os
 import re
 import sys
-import urllib.error
 import urllib.request
 from datetime import datetime
 
@@ -25,16 +29,46 @@ OUT_FILE = "README.md"
 EXCLUDE = {USERNAME.lower(), ".github"}
 
 MAX_DESC = 110
+MAX_TRANSLATE_PER_RUN = 10
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DESC_FILE = os.path.join(HERE, "descriptions.json")
+
+MODELS_ENDPOINT = "https://models.github.ai/inference/chat/completions"
+MODEL = "openai/gpt-4o-mini"
+
+PROMPT = """Translate this GitHub repository description into 4 locales.
+
+Repository: {name}
+Original description: {desc}
+
+Locales:
+- zh-cn: Simplified Chinese
+- zh-tw: Traditional Chinese (Taiwan)
+- en: English
+- ja: Japanese
+
+Rules:
+- Under 100 characters
+- Keep technical terms, product names and version numbers unchanged
+- Describe what it does, no marketing fluff
+- Do not invent facts absent from the original
+
+Return ONLY a JSON object with keys "zh-cn", "zh-tw", "en", "ja". No markdown fence."""
+
+
+def token():
+    return os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
 
 
 def api_get(url):
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": USERNAME,
     }
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
+    tk = token()
+    if tk:
+        headers["Authorization"] = f"Bearer {tk}"
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.load(resp)
@@ -57,10 +91,10 @@ def fetch_all_repos():
 
 
 def clean_desc(text):
+    """去掉重复粘贴的描述、超长截断。不转义竖线，留给表格渲染处理。"""
     if not text:
         return "—"
     s = re.sub(r"\s+", " ", text).strip()
-    # 描述被重复粘贴两遍时只留一份
     for size in range(len(s) // 2, 15, -1):
         if s[:size].rstrip("。.") == s[size : size * 2].rstrip("。."):
             s = s[:size].strip()
@@ -71,9 +105,14 @@ def clean_desc(text):
         for sep in ("。", "！", "？", "; ", ". ", ".", ";"):
             pos = cut.rfind(sep)
             if pos >= MAX_DESC * 0.6:
-                return cut[: pos + len(sep)].strip().replace("|", "\\|")
+                return cut[: pos + len(sep)].strip()
         s = cut.rstrip(" ,，、;；") + "…"
-    return s.replace("|", "\\|")
+    return s
+
+
+def cell(text):
+    """Markdown 表格单元格转义。"""
+    return text.replace("|", "\\|")
 
 
 def short_date(iso):
@@ -83,7 +122,117 @@ def short_date(iso):
         return "—"
 
 
-def build_readme(repos):
+def load_descriptions():
+    if not os.path.exists(DESC_FILE):
+        return {}
+    with open(DESC_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_descriptions(data):
+    with open(DESC_FILE, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+def _normalize(payload):
+    """校验四语言齐全，返回干净的 dict 或 None。"""
+    out = {}
+    for code in i18n.LANGS:
+        v = payload.get(code)
+        if not isinstance(v, str) or not v.strip():
+            return None
+        out[code] = re.sub(r"\s+", " ", v).strip()
+    return out
+
+
+def translate(name, desc):
+    """调 GitHub Models 翻译，任何失败都返回 None（调用方回落原文）。"""
+    tk = token()
+    if not tk:
+        return None
+
+    body = json.dumps(
+        {
+            "model": MODEL,
+            "messages": [
+                {"role": "user", "content": PROMPT.format(name=name, desc=desc)}
+            ],
+            "temperature": 0.3,
+            "max_tokens": 600,
+        }
+    ).encode()
+
+    req = urllib.request.Request(
+        MODELS_ENDPOINT,
+        data=body,
+        headers={
+            "Authorization": f"Bearer {tk}",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            raw = resp.read().decode("utf-8").strip()
+    except Exception as exc:  # 网络、鉴权、配额、模型名错误统统降级
+        print(f"    请求失败：{exc}")
+        return None
+
+    # 正常是 OpenAI 格式；也兼容直接返回纯文本 / 被反引号包裹的情况
+    text = raw
+    try:
+        payload = json.loads(raw)
+        if isinstance(payload, dict) and "choices" in payload:
+            text = payload["choices"][0]["message"]["content"]
+        elif isinstance(payload, dict):
+            got = _normalize(payload)
+            if got:
+                return got
+    except json.JSONDecodeError:
+        pass
+
+    text = text.strip()
+    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text).strip()
+    try:
+        return _normalize(json.loads(text))
+    except (json.JSONDecodeError, AttributeError):
+        return None
+
+
+def sync_translations(repos, descs):
+    """给缺少翻译、或 GitHub 上描述已改动的仓库补翻译。返回是否有改动。"""
+    dirty = False
+    budget = MAX_TRANSLATE_PER_RUN
+
+    for r in repos:
+        if budget <= 0:
+            print(f"    本轮翻译已达上限 {MAX_TRANSLATE_PER_RUN} 个，其余下次继续")
+            break
+
+        name = r["name"]
+        src = (r.get("description") or "").strip()
+        if not src:
+            continue
+
+        entry = descs.get(name) or {}
+        if entry.get("_source") == src and all(entry.get(c) for c in i18n.LANGS):
+            continue
+
+        print(f"    翻译 {name} ...")
+        got = translate(name, src)
+        budget -= 1
+        if got:
+            got["_source"] = src
+            descs[name] = got
+            dirty = True
+            print(f"      ✓ {got['en'][:50]}")
+        else:
+            print("      ✗ 翻译失败，本次回落原文")
+
+    return dirty
+
+
+def build_readme(repos, descs):
     total = len(repos)
 
     # GitHub 会给 HTML 锚点 id 加上 user-content- 前缀，链接必须照着写
@@ -99,8 +248,8 @@ def build_readme(repos):
         for i, r in enumerate(repos, 1):
             lang = f"`{r['language']}`" if r.get("language") else "—"
             stars = r.get("stargazers_count", 0)
-            # 优先用手写翻译；没有就用 GitHub 上的原始描述
-            desc = i18n.DESCRIPTIONS.get(r["name"], {}).get(code) or clean_desc(
+            # 优先用已翻译的描述；没有则回落 GitHub 上的原文
+            desc = (descs.get(r["name"]) or {}).get(code) or clean_desc(
                 r.get("description")
             )
             rows.append(
@@ -108,7 +257,7 @@ def build_readme(repos):
                     i=i,
                     name=r["name"],
                     url=r["html_url"],
-                    desc=desc,
+                    desc=cell(desc),
                     lang=lang,
                     stars=f"⭐ {stars}" if stars else "—",
                     updated=short_date(r.get("updated_at")),
@@ -159,7 +308,13 @@ def main():
     ]
     repos.sort(key=lambda r: r.get("updated_at") or "", reverse=True)
 
-    content = build_readme(repos)
+    descs = load_descriptions()
+
+    if os.environ.get("AUTO_TRANSLATE") == "1":
+        if sync_translations(repos, descs):
+            save_descriptions(descs)
+
+    content = build_readme(repos, descs)
 
     if os.path.exists(OUT_FILE):
         with open(OUT_FILE, encoding="utf-8") as f:
