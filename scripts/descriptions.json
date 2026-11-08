@@ -27,13 +27,6 @@
     "ja": "AI を使って制作したゲーム",
     "_source": "This is my using AI to create a game."
   },
-  "File-Transfer": {
-    "zh-cn": "免登录、免云端的局域网互传工具，同一 Wi-Fi 下电脑与手机互传文字和任意文件",
-    "zh-tw": "免登入、免雲端的區域網路互傳工具，同一 Wi-Fi 下電腦與手機互傳文字和任意檔案",
-    "en": "Share text and files between PCs and phones on the same Wi-Fi — no login, no cloud, no install",
-    "ja": "同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要",
-    "_source": "LAN Quick Share sends text and files between PCs and phones over the same Wi-Fi, no login, no cloud.區網快傳是免登入、免雲端的區域網路互傳工具，同一個 Wi-Fi 下，電腦間傳文字與任意檔案，手機瀏覽器開網址即可上傳接收。內建 UDP 搜尋、手動 IP、拖放傳檔與記錄，中英雙語介面，免安裝與安裝版。"
-  },
   "Password-Generator": {
     "zh-cn": "纯本地运行的密码生成器、强度分析与密码保险库，中英双语界面，数据完全不上传",
     "zh-tw": "純本機執行的密碼產生器、強度分析與密碼保險庫，中英雙語介面，資料完全不上傳",
