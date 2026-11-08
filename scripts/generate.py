@@ -119,6 +119,53 @@ def cell(text):
     return text.replace("|", "\\|")
 
 
+CJK_RE = re.compile(r"[\u4e00-\u9fff\u3400-\u4dbf]")
+LATIN_RE = re.compile(r"[A-Za-z]")
+
+
+def split_languages(text):
+    """把中英混排的描述按句子拆开、同语言合并，返回 {lang: 文本}。"""
+    # 先按竖线/换行/句末标点切句。最后一条专门处理「英文句号紧跟中文」
+    # 这种没空格的情况（例："no cloud.區網快傳…"），否则中英会黏成一句。
+    raw = re.split(
+        r"[|\n]+|(?<=[。！？；])|(?<=[.!?;])(?=\s|$)|(?<=[.!?])(?=[\u4e00-\u9fff])",
+        text,
+    )
+    buckets = {}
+    for seg in raw:
+        seg = seg.strip()
+        if len(seg) < 4:
+            continue
+        cjk = len(CJK_RE.findall(seg))
+        latin = len(LATIN_RE.findall(seg))
+        if cjk == 0 and latin == 0:
+            continue
+        lang = "zh" if cjk >= latin else "en"
+        buckets.setdefault(lang, []).append(seg)
+
+    # 中文句子直接拼接（加空格反而难看），英文用空格分隔
+    return {
+        k: ("" if k == "zh" else " ").join(v).strip() for k, v in buckets.items()
+    }
+
+
+def pick_source(desc):
+    """中英混排时拆开，取信息量最大的单语段作为翻译源。
+
+    仓库描述常见「英文一句 + 中文一句」互为翻译的写法，整段丢给模型
+    只会翻一半，出来还是半中半英。这里先分离，再挑内容最全的一段。
+    """
+    parts = split_languages(desc)
+    if len(parts) <= 1:
+        return desc, list(parts)
+
+    longest = max(parts.items(), key=lambda kv: len(kv[1]))
+    print(
+        f"      检测到 {'/'.join(sorted(parts))} 混排，取最长的 {longest[0]} 段作源"
+    )
+    return longest[1], list(parts.items())
+
+
 def short_date(iso):
     try:
         return datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
@@ -219,13 +266,16 @@ def translate(desc):
         print("      未配置 LLM_API_KEY，跳过翻译")
         return None
 
+    # 中英混排的描述先拆开，只拿单语的那段去翻，避免译出来还是半中半英
+    src, _parts = pick_source(desc)
+
     override = os.environ.get("LLM_MODEL")
     models = [override] if override else _pick_models(key)
 
     for model in models:
         out = {}
         for code in i18n.LANGS:
-            got = _translate_one(key, model, desc, LANG_NAMES[code])
+            got = _translate_one(key, model, src, LANG_NAMES[code])
             if not got:
                 print(f"      {model} 译 {LANG_NAMES[code]} 失败，换下一个模型")
                 out = None
