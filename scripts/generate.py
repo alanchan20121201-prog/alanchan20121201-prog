@@ -8,9 +8,15 @@
 import json
 import os
 import re
+import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+
+# 允许从任意工作目录运行本脚本
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import i18n  # noqa: E402
 
 USERNAME = "alanchan20121201-prog"
 OUT_FILE = "README.md"
@@ -78,42 +84,64 @@ def short_date(iso):
 
 
 def build_readme(repos):
-    rows = []
-    for i, r in enumerate(repos, 1):
-        lang = f"`{r['language']}`" if r.get("language") else "—"
-        stars = r.get("stargazers_count", 0)
-        rows.append(
-            "| {i} | [{name}]({url}) | {desc} | {lang} | {stars} | {updated} |".format(
-                i=i,
-                name=r["name"],
-                url=r["html_url"],
-                desc=clean_desc(r.get("description")),
-                lang=lang,
-                stars=f"⭐ {stars}" if stars else "—",
-                updated=short_date(r.get("updated_at")),
-            )
-        )
-
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     total = len(repos)
 
+    nav = " · ".join(
+        f'<a href="#{code}">{i18n.LANG_LABEL[code]}</a>' for code in i18n.LANGS
+    )
+
+    blocks = []
+    for code in i18n.LANGS:
+        ui = i18n.UI[code]
+        rows = []
+        for i, r in enumerate(repos, 1):
+            lang = f"`{r['language']}`" if r.get("language") else "—"
+            stars = r.get("stargazers_count", 0)
+            # 优先用手写翻译；没有就用 GitHub 上的原始描述
+            desc = i18n.DESCRIPTIONS.get(r["name"], {}).get(code) or clean_desc(
+                r.get("description")
+            )
+            rows.append(
+                "| {i} | [{name}]({url}) | {desc} | {lang} | {stars} | {updated} |".format(
+                    i=i,
+                    name=r["name"],
+                    url=r["html_url"],
+                    desc=desc,
+                    lang=lang,
+                    stars=f"⭐ {stars}" if stars else "—",
+                    updated=short_date(r.get("updated_at")),
+                )
+            )
+
+        header = "| " + " | ".join(ui["cols"]) + " |"
+        blocks.append(
+            f'<a id="{code}"></a>\n\n'
+            f"## {i18n.LANG_LABEL[code]}\n\n"
+            f'{ui["tagline"].format(count=total)}\n\n'
+            f"{header}\n|:-:|:--|:--|:--|:-:|:--|\n" + "\n".join(rows)
+        )
+
+    sep = "\n\n---\n\n"
+    titles = " · ".join(i18n.UI[c]["title"] for c in i18n.LANGS)
+
     return f"""<div align="center">
 
-# 專案合集
+# {titles}
 
-自製工具與實驗專案 · 全部開源 · 共 {total} 個
+{nav}
 
 [![Repos](https://img.shields.io/badge/repos-{total}-blue?style=flat-square)](https://github.com/{USERNAME}?tab=repositories)
 
 </div>
 
-| # | 專案 | 說明 | 語言 | ⭐ | 最近更新 |
-|:-:|:-----|:-----|:-----|:-:|:---------|
-{os.linesep.join(rows)}
+---
+
+{sep.join(blocks)}
 
 ---
 
-<sub>本清單由 GitHub Actions 每 15 分鐘自動同步，最後更新於 {stamp} · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">執行記錄</a></sub>
+<sub>Auto-synced every 15 min by GitHub Actions · 每 15 分鐘自動同步 · 最后更新 {stamp} · <a href="https://github.com/{USERNAME}/{USERNAME}/actions">Actions</a></sub>
 """
 
 
