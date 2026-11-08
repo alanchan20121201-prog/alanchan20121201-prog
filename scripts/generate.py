@@ -389,13 +389,15 @@ def build_readme(repos, descs):
         for code in i18n.LANGS
     )
 
-    # 各语言表下方标注的生成时间（本地 UTC+8），让用户知道数据新鲜度
-    GEN_TIME = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8)))
+    # 各语言表下方标注的生成日期（本地 UTC+8）。只到「日」而非「分」，
+    # 否则每次自动生成内容都不同，会每 15 分钟多一个 commit 刷屏。
+    # 注意：这是「本页生成日期」，不是各仓库的更新日期（那是表格里的「最近更新」列）。
+    GEN_DATE = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8)))
     GEN_LABEL = {
-        "zh-cn": "最后更新",
-        "zh-tw": "最後更新",
-        "en": "Last updated",
-        "ja": "最終更新",
+        "zh-cn": "本页同步于",
+        "zh-tw": "本頁同步於",
+        "en": "Page synced on",
+        "ja": "このページの同期日",
     }
 
     # 版本号只查一次，四个语言表共用（不然同一仓库会重复请求四遍）
@@ -438,7 +440,7 @@ def build_readme(repos, descs):
             f'{ui["tagline"].format(count=total)}\n\n'
             f"{header}\n|:-:|:--|:--|:--|:-:|:--|\n"
             + "\n".join(rows)
-            + f"\n\n> {GEN_LABEL[code]}：{GEN_TIME:%Y-%m-%d %H:%M}（UTC+8）"
+            + f"\n\n> {GEN_LABEL[code]}：{GEN_DATE:%Y-%m-%d}（UTC+8）"
         )
 
     sep = "\n\n---\n\n"
