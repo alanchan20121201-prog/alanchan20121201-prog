@@ -18,8 +18,8 @@
 
 | # | 项目 | 说明 | 语言 | ⭐ | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言 | `C` | ⭐ 1 | 2026-11-08 |
-| 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 制作的游戏 | `C#` | ⭐ 1 | 2026-11-08 |
+| 1 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 制作的游戏 | `C#` | ⭐ 1 | 2026-11-08 |
+| 2 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言 | `C` | ⭐ 1 | 2026-11-08 |
 | 3 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 4 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) | 无边框透明悬浮的倒计时／秒表／番茄钟，四种显示模式、四语言、内置更新 | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | 极简、本地优先的桌面笔记软件（Electron），内置回收站与便携版 exe | `JavaScript` | ⭐ 1 | 2026-11-08 |
@@ -39,8 +39,8 @@
 
 | # | 專案 | 說明 | 語言 | ⭐ | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言 | `C` | ⭐ 1 | 2026-11-08 |
-| 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 製作的遊戲 | `C#` | ⭐ 1 | 2026-11-08 |
+| 1 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | 用 AI 製作的遊戲 | `C#` | ⭐ 1 | 2026-11-08 |
+| 2 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言 | `C` | ⭐ 1 | 2026-11-08 |
 | 3 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句話像浮水印般刻在桌面上，永遠置頂、滑鼠穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 4 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) | 無邊框透明懸浮的倒數計時／碼錶／番茄鐘，四種顯示模式、四語言、內建更新 | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | 極簡、本地優先的桌面筆記軟體（Electron），內建回收筒與可攜版 exe | `JavaScript` | ⭐ 1 | 2026-11-08 |
@@ -60,8 +60,8 @@ Self-built tools and experiments · All open source · 10 in total
 
 | # | Project | Description | Language | ⭐ | Updated |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages | `C` | ⭐ 1 | 2026-11-08 |
-| 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | A game built with AI | `C#` | ⭐ 1 | 2026-11-08 |
+| 1 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | A game built with AI | `C#` | ⭐ 1 | 2026-11-08 |
+| 2 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages | `C` | ⭐ 1 | 2026-11-08 |
 | 3 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | Etch a line of text onto your desktop like a watermark — always on top, click-through (.NET 8 + WPF) | `C#` | ⭐ 1 | 2026-11-08 |
 | 4 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) | Frameless transparent floating countdown / stopwatch / Pomodoro timer. Four display modes, four languages, in-app updates | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | Minimalist local-first desktop note-taking app (Electron) with built-in trash bin and portable exe | `JavaScript` | ⭐ 1 | 2026-11-08 |
@@ -81,8 +81,8 @@ Self-built tools and experiments · All open source · 10 in total
 
 | # | プロジェクト | 説明 | 言語 | ⭐ | 更新日 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語 | `C` | ⭐ 1 | 2026-11-08 |
-| 2 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | AI を使って制作したゲーム | `C#` | ⭐ 1 | 2026-11-08 |
+| 1 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) | AI を使って制作したゲーム | `C#` | ⭐ 1 | 2026-11-08 |
+| 2 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) | 軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語 | `C` | ⭐ 1 | 2026-11-08 |
 | 3 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | テキストを透かしのようにデスクトップに刻む Windows ツール。常に最前面、マウス貫通（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 |
 | 4 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) | 枠なし・透明のフローティング式カウントダウン／ストップウォッチ／ポモドーロ。4 表示モード、4 言語、アプリ内更新 | `JavaScript` | ⭐ 1 | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | ミニマルなローカル優先デスクトップメモ帳（Electron）。ゴミ箱機能とポータブル exe 付き | `JavaScript` | ⭐ 1 | 2026-11-08 |
