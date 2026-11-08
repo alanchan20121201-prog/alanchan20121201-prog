@@ -17,6 +17,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.request
 from datetime import datetime
 
@@ -44,12 +46,14 @@ DESC_FILE = os.path.join(HERE, "descriptions.json")
 # 换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
 
-# 按优先级逐个尝试，前面的失败（超时/限流/无权限）自动降级
+# 按优先级逐个尝试。
+# glm-4.7-flash 虽然是官方免费，但访问量太大、长期 429，实测很难抢到；
+# glm-4.6v-flash 是视觉模型，翻译生硬（把「區網快傳」译成「区網快伝」）。
+# 所以把稳定的 glm-5.3-flash 放首位 —— 单次约 0.0004 元，一个仓库四语言不到 0.002 元。
 LLM_MODELS = [
-    "glm-5.3-flash",  # 最便宜的可用档
-    "glm-4.5-air",  # 轻量版兜底
-    "glm-4.7",
-    "glm-5.3",
+    "glm-5.3-flash",   # 质量最好、最稳定，成本极低
+    "glm-4.7-flash",   # 官方免费，抢得到就省钱
+    "glm-4.6v-flash",  # 视觉模型，翻得糙，只作最后兜底
 ]
 
 LANG_NAMES = {
@@ -59,9 +63,16 @@ LANG_NAMES = {
     "ja": "日语",
 }
 
-# 专用翻译模型不需要 JSON 输出，逐语言调用命中率更高
+# 逐语言调用，比一次性吐 JSON 更稳。最后一句约束字形，防止简繁混用
+# （实测免费模型容易把「区域网络」写成「區域网络」、「传檔」这种半简半繁）
 MT_PROMPT = """把下面的文本翻译成{tlang}，只输出译文本身，不要解释，不要加引号。
 
+要求：
+- 全文必须统一使用{tlang}的标准字形，不要混入简体字或繁体字
+- 专有名词、技术术语、版本号保持原样
+- 不要添加原文没有的信息
+
+原文：
 {text}"""
 
 
@@ -163,11 +174,18 @@ def pick_source(desc):
     if len(parts) <= 1:
         return desc, list(parts)
 
-    longest = max(parts.items(), key=lambda kv: len(kv[1]))
-    print(
-        f"      检测到 {'/'.join(sorted(parts))} 混排，取最长的 {longest[0]} 段作源"
-    )
-    return longest[1], list(parts.items())
+    ranked = sorted(parts.items(), key=lambda kv: len(kv[1]), reverse=True)
+    top_len = len(ranked[0][1])
+
+    # 两段长度接近（差 25% 内）时优先用中文：母语描述通常写得更细
+    picked = ranked[0]
+    for lang, text in ranked:
+        if lang == "zh" and len(text) >= top_len * 0.75:
+            picked = (lang, text)
+            break
+
+    print(f"      检测到 {'/'.join(sorted(parts))} 混排，取 {picked[0]} 段作源")
+    return picked[1], ranked
 
 
 def short_date(iso):
@@ -190,31 +208,45 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _chat(key, prompt, model, max_tokens=400):
-    """调 OpenAI 兼容接口，返回文本或 None。"""
-    body = json.dumps(
-        {
-            "model": model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.3,
-            "max_tokens": max_tokens,
-        }
-    ).encode()
-    req = urllib.request.Request(
-        f"{LLM_BASE_URL}/chat/completions",
-        data=body,
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        return data["choices"][0]["message"]["content"]
-    except Exception as exc:
-        print(f"      {model}: {exc}")
-        return None
+def _chat(key, prompt, model, max_tokens=1200, retries=3):
+    """调 OpenAI 兼容接口，返回文本或 None。
+
+    两个坑：
+    1. 智谱 glm-5 系列是推理模型，先输出 reasoning_content 再给 content。
+       max_tokens 太小会被思考吃光、content 变空串，所以给得宽松（答完即 stop）。
+    2. 免费模型（glm-4.7-flash 等）访问量大，经常回 429，等几秒再重试就有名额。
+    """
+    for attempt in range(retries):
+        body = json.dumps(
+            {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.3,
+                "max_tokens": max_tokens,
+            }
+        ).encode()
+        req = urllib.request.Request(
+            f"{LLM_BASE_URL}/chat/completions",
+            data=body,
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            return data["choices"][0]["message"]["content"]
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 and attempt < retries - 1:
+                time.sleep(5 * (attempt + 1))  # 免费模型拥挤，退避后重试
+                continue
+            print(f"      {model}: HTTP {exc.code}")
+            return None
+        except Exception as exc:
+            print(f"      {model}: {exc}")
+            return None
+    return None
 
 
 def _fetch_models(key):
@@ -233,26 +265,20 @@ def _fetch_models(key):
 
 
 def _pick_models(key):
-    """用 /models 校验候选模型是否真实存在，按质量顺序返回。"""
+    """直接按 LLM_MODELS 的优先级返回。
+
+    /models 列表并不可靠——官方的免费模型（glm-4.7-flash）常常不出现在里面，
+    但实际可以调用。所以这里只拿列表打日志，不拿它做过滤。
+    """
     available = _fetch_models(key) or []
-    if not available:
-        return list(LLM_MODELS)
-
-    print(f"      平台可用模型 {len(available)} 个")
-
-    lower = {m.lower(): m for m in available}
-    ordered = [lower[m.lower()] for m in LLM_MODELS if m.lower() in lower]
-    if ordered:
-        print(f"      按质量顺序首选：{ordered[0]}")
-        return ordered
-
-    print(f"      候选都不在列表中，改用：{available[0]}")
-    return available[:3]
+    if available:
+        print(f"      平台列出 {len(available)} 个模型")
+    return list(LLM_MODELS)
 
 
 def _translate_one(key, model, text, tlang):
     """让模型把 text 译成 tlang，返回干净译文或 None。"""
-    raw = _chat(key, MT_PROMPT.format(tlang=tlang, text=text), model, max_tokens=400)
+    raw = _chat(key, MT_PROMPT.format(tlang=tlang, text=text), model)
     if not raw:
         return None
     s = raw.strip()
