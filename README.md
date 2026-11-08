@@ -18,9 +18,9 @@
 
 | # | 项目 | 说明 | 语言 | ⭐ | 最近更新 | 许可 |
 |:-:|:--|:--|:--|:-:|:--|:-:|
-| 1 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登录、免云端的局域网互传工具。同一 Wi-Fi 下电脑与手机互传文字和任意文件，手机浏览器打开网址即可收发 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
-| 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 这是一个多功能工具箱。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
-| 3 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 2 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登录、免云端的局域网互传工具。同一 Wi-Fi 下电脑与手机互传文字和任意文件，手机浏览器打开网址即可收发 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
+| 3 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 这是一个多功能工具箱。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) | 纯本地运行的密码生成器、强度分析与密码保险库，中英双语界面，数据完全不上传 | `TypeScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | 极简、本地优先的桌面笔记软件（Electron），内置回收站与便携版 exe | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 6 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 | `MIT` |
@@ -40,9 +40,9 @@
 
 | # | 專案 | 說明 | 語言 | ⭐ | 最近更新 | 授權 |
 |:-:|:--|:--|:--|:-:|:--|:-:|
-| 1 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登入、免雲端的區域網路互傳工具。同一 Wi-Fi 下電腦與手機互傳文字和任意檔案，手機瀏覽器開啟網址即可收發 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
-| 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 這是一個多功能工具箱。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
-| 3 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | 像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 2 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 免登入、免雲端的區域網路互傳工具。同一 Wi-Fi 下電腦與手機互傳文字和任意檔案，手機瀏覽器開啟網址即可收發 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
+| 3 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | 這是一個多功能工具箱。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) | 純本機執行的密碼產生器、強度分析與密碼保險庫，中英雙語介面，資料完全不上傳 | `TypeScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | 極簡、本地優先的桌面筆記軟體（Electron），內建回收筒與可攜版 exe | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 6 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | 把一句話像浮水印般刻在桌面上，永遠置頂、滑鼠穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 | `MIT` |
@@ -62,9 +62,9 @@ Self-built tools and experiments · All open source · 11 in total
 
 | # | Project | Description | Language | ⭐ | Updated | License |
 |:-:|:--|:--|:--|:-:|:--|:-:|
-| 1 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | Share text and files between PCs and phones on the same Wi-Fi - no login, no cloud, just open a URL | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
-| 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-11-08 | `MIT` |
-| 3 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 2 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | Share text and files between PCs and phones on the same Wi-Fi - no login, no cloud, just open a URL | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
+| 3 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | This is a versatile toolbox. | — | ⭐ 1 | 2026-11-08 | `MIT` |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) | Local-only password generator, strength analyzer and secure vault. Bilingual UI, zero uploads | `TypeScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | Minimalist local-first desktop note-taking app (Electron) with built-in trash bin and portable exe | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 6 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | Etch a line of text onto your desktop like a watermark — always on top, click-through (.NET 8 + WPF) | `C#` | ⭐ 1 | 2026-11-08 | `MIT` |
@@ -84,9 +84,9 @@ Self-built tools and experiments · All open source · 11 in total
 
 | # | プロジェクト | 説明 | 言語 | ⭐ | 更新日 | ライセンス |
 |:-:|:--|:--|:--|:-:|:--|:-:|
-| 1 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
-| 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | これは多用途のツールボックスです。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
-| 3 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 1 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) | ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
+| 2 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) | 同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要 | `Python` | ⭐ 1 | 2026-11-08 | `Apache-2.0` |
+| 3 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) | これは多用途のツールボックスです。 | — | ⭐ 1 | 2026-11-08 | `MIT` |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) | 完全ローカル動作のパスワード生成・強度分析・保管庫。多言語 UI、データ送信なし | `TypeScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) | ミニマルなローカル優先デスクトップメモ帳（Electron）。ゴミ箱機能とポータブル exe 付き | `JavaScript` | ⭐ 1 | 2026-11-08 | `MIT` |
 | 6 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) | テキストを透かしのようにデスクトップに刻む Windows ツール。常に最前面、マウス貫通（.NET 8 + WPF） | `C#` | ⭐ 1 | 2026-11-08 | `MIT` |
