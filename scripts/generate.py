@@ -204,11 +204,18 @@ def _pick_models(key):
 
     print(f"      账号可用模型 {len(available)} 个：{', '.join(available[:12])}")
 
-    lower = {m.lower(): m for m in available}
-    ordered = [lower[p] for p in LLM_PREFERRED if p in lower]
-    # 优先级表里没覆盖到的，补在后面
-    ordered += [m for m in available if m.lower() not in LLM_PREFERRED][:2]
-    return ordered or available[:3]
+    # 名字带 flash 的通常是免费版，不管版本号多新都优先用
+    free = [m for m in available if "flash" in m.lower()]
+    rest = [m for m in available if "flash" not in m.lower()]
+
+    free_lower = {m.lower() for m in free}
+    lower = {m.lower(): m for m in rest}
+    ordered = [
+        lower[p] for p in LLM_PREFERRED if p in lower and p not in free_lower
+    ]
+    # 优先级表没覆盖到的，补在后面
+    ordered += [m for m in rest if m.lower() not in LLM_PREFERRED]
+    return free + ordered
 
 
 def translate(desc):
