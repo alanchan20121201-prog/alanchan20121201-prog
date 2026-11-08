@@ -4,8 +4,8 @@
 新仓库第一次出现时会自动翻译成四语言，结果记入 descriptions.json；
 翻译失败则回落到 GitHub 上的原始描述，不影响 README 生成。
 
-译者走硅基流动的免费接口，首选腾讯 Hunyuan-MT-7B（专用机器翻译模型，WMT25 冠军），
-失败自动降级到其他免费模型。没配 LLM_API_KEY 时跳过翻译、直接显示原文，不会报错。
+译者走智谱（国内少数不卡实名认证的平台）。没配 LLM_API_KEY 时跳过翻译、
+直接显示原文，不会报错。
 
 本地运行（默认不翻译，避免污染数据）：
     GH_TOKEN=$(gh auth token) python scripts/generate.py
@@ -38,14 +38,18 @@ MAX_TRANSLATE_PER_RUN = 1
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# 翻译走硅基流动。首选腾讯 Hunyuan-MT-7B —— 专用机器翻译模型（WMT25 冠军），
-# 官方标注完全免费。换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.siliconflow.cn/v1")
+# 翻译走智谱。国内几家免费平台（硅基流动 / ModelScope / 阿里百炼）都卡实名认证，
+# 智谱是目前唯一验证可用的。glm-5.3-flash 是最便宜的一档：输入 0.8 元、输出 2.8 元
+# 每百万 tokens，单次翻译约 0.0004 元；新账号还送 2000 万 tokens，实际支出接近零。
+# 换供应商只设 LLM_BASE_URL 这一个 secret，代码不用动。
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
 
-# 按优先级逐个尝试，前面的失败（超时/限流）自动降级
+# 按优先级逐个尝试，前面的失败（超时/限流/无权限）自动降级
 LLM_MODELS = [
-    "tencent/Hunyuan-MT-7B",  # 专用翻译模型，免费
-    "XingChenAGI/Xing4.0-29B",  # 通用模型兜底，也免费
+    "glm-5.3-flash",  # 最便宜的可用档
+    "glm-4.5-air",  # 轻量版兜底
+    "glm-4.7",
+    "glm-5.3",
 ]
 
 LANG_NAMES = {
