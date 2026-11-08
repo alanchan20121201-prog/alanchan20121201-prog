@@ -17,8 +17,6 @@ import json
 import os
 import re
 import sys
-import time
-import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -34,18 +32,37 @@ OUT_FILE = "README.md"
 EXCLUDE = {USERNAME.lower(), ".github"}
 
 MAX_DESC = 110
-# 免费翻译接口的 IP 级限流很敏感，一次只翻一个仓库，剩下的交给后续定时任务慢慢消化
+# 一次跑只翻一个仓库，避免拖长任务耗时（失败的下次定时任务会重试）
 MAX_TRANSLATE_PER_RUN = 1
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# Google 翻译的公开接口：无需 API key，但有速率限制，所以串行 + 退避重试。
-GTX = (
-    "https://translate.googleapis.com/translate_a/single"
-    "?client=gtx&sl=auto&tl={tl}&dt=t&q={q}"
+# 译者用 Google Gemini 免费额度。没配 GEMINI_API_KEY 时跳过翻译，直接显示原文。
+GEMINI_URL = (
+    "https://generativelanguage.googleapis.com/v1beta/models/{model}"
+    ":generateContent?key={key}"
 )
-TL = {"zh-cn": "zh-CN", "zh-tw": "zh-TW", "en": "en", "ja": "ja"}
+# 按顺序探测，第一个能用的就固定下来
+GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+
+PROMPT = """Translate this GitHub repository description into 4 locales.
+
+Original description: {desc}
+
+Locales:
+- zh-cn: Simplified Chinese
+- zh-tw: Traditional Chinese (Taiwan)
+- en: English
+- ja: Japanese
+
+Rules:
+- Under 100 characters
+- Keep technical terms, product names and version numbers unchanged
+- Describe what it does, no marketing fluff
+- Do not invent facts absent from the original
+
+Return ONLY a JSON object with keys "zh-cn", "zh-tw", "en", "ja". No markdown fence."""
 
 
 def token():
@@ -126,38 +143,56 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _gtx(text, tl, retries=2):
-    """调 Google 翻译公开接口，返回译文；失败返回 None。"""
-    url = GTX.format(tl=tl, q=urllib.parse.quote(text))
-    for attempt in range(retries):
-        try:
-            req = urllib.request.Request(
-                url, headers={"User-Agent": "Mozilla/5.0"}
-            )
-            with urllib.request.urlopen(req, timeout=25) as resp:
-                payload = json.loads(resp.read().decode("utf-8"))
-            parts = [seg[0] for seg in payload[0] if seg and seg[0]]
-            out = "".join(parts).strip()
-            if out:
-                return out
-        except Exception as exc:
-            if attempt == retries - 1:
-                print(f"      {tl} 失败：{exc}")
-            else:
-                time.sleep(5)  # 429 是 IP 级限流，短等即可，长等会拖垮整轮
-    return None
+def _gemini(model, key, prompt):
+    """调 Gemini 单次生成，返回文本或 None。"""
+    body = json.dumps(
+        {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 800},
+        }
+    ).encode()
+    req = urllib.request.Request(
+        GEMINI_URL.format(model=model, key=key),
+        data=body,
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as exc:
+        print(f"      {model}: {exc}")
+        return None
 
 
 def translate(desc):
-    """逐语言翻译，任一语言失败则整体放弃（调用方回落原文）。"""
-    out = {}
-    for code in i18n.LANGS:
-        got = _gtx(desc, TL[code])
-        if not got:
-            return None
-        out[code] = re.sub(r"\s+", " ", got).strip()
-        time.sleep(2)  # 串行限速，避免被 Google 挡掉
-    return out
+    """一次请求拿到四语言结果；没配 key 或全部模型失败都返回 None。"""
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        print("      未配置 GEMINI_API_KEY，跳过翻译")
+        return None
+
+    prompt = PROMPT.format(desc=desc)
+    for model in GEMINI_MODELS:
+        raw = _gemini(model, key, prompt)
+        if not raw:
+            continue
+        text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+
+        out, ok = {}, True
+        for code in i18n.LANGS:
+            v = payload.get(code)
+            if not isinstance(v, str) or not v.strip():
+                ok = False
+                break
+            out[code] = re.sub(r"\s+", " ", v).strip()
+        if ok:
+            return out
+    return None
 
 
 def sync_translations(repos, descs):
