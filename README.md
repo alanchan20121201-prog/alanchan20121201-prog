@@ -30,7 +30,7 @@
 | 10 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Windows 托盘小工具：Ctrl+Alt+L 一键把指定窗口锁定置顶，带高亮边框 | `C#` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 无边框透明悬浮的倒计时／秒表／番茄钟，四种显示模式、四语言、内置更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> 最后更新：2026-11-09 00:43（UTC+8）
+> 本页同步于：2026-11-09（UTC+8）
 
 ---
 
@@ -54,7 +54,7 @@
 | 10 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Windows 托盤小工具：Ctrl+Alt+L 一鍵把指定視窗鎖定置頂，帶高亮邊框 | `C#` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 無邊框透明懸浮的倒數計時／碼錶／番茄鐘，四種顯示模式、四語言、內建更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> 最後更新：2026-11-09 00:43（UTC+8）
+> 本頁同步於：2026-11-09（UTC+8）
 
 ---
 
@@ -78,7 +78,7 @@ Self-built tools and experiments · All open source · 11 in total
 | 10 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Tray utility — press Ctrl+Alt+L to pin any window on top, with a highlight border | `C#` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | Frameless transparent floating countdown / stopwatch / Pomodoro timer. Four display modes, four languages, in-app updates | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> Last updated：2026-11-09 00:43（UTC+8）
+> Page synced on：2026-11-09（UTC+8）
 
 ---
 
@@ -102,7 +102,7 @@ Self-built tools and experiments · All open source · 11 in total
 | 10 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | 常駐ツール。Ctrl+Alt+L で任意のウィンドウを最前面に固定、ハイライト枠付き | `C#` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 枠なし・透明のフローティング式カウントダウン／ストップウォッチ／ポモドーロ。4 表示モード、4 言語、アプリ内更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> 最終更新：2026-11-09 00:43（UTC+8）
+> このページの同期日：2026-11-09（UTC+8）
 
 ---
 
