@@ -38,10 +38,17 @@ MAX_TRANSLATE_PER_RUN = 1
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
 
-# 翻译走任意 OpenAI 兼容接口，默认智谱 GLM-4-Flash（免费、国内直连、无需信用卡）。
-# 想换供应商只改 LLM_BASE_URL / LLM_MODEL 两个 secret，代码不用动。
+# 翻译走任意 OpenAI 兼容接口，默认智谱（免费、国内直连、无需信用卡）。
+# 想换供应商只改 LLM_BASE_URL 一个 secret，代码不用动。
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4")
-LLM_MODEL = os.environ.get("LLM_MODEL", "glm-4-flash")
+# 免费模型的名称会随版本迭代变化，按顺序探测，能用哪个算哪个
+LLM_MODELS = [
+    "glm-4.7-flash",
+    "glm-4-flash",
+    "glm-4-flash-250414",
+    "glm-4-air",
+    "glm-4",
+]
 
 PROMPT = """Translate this GitHub repository description into 4 locales.
 
@@ -140,11 +147,11 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _chat(key, prompt):
+def _chat(key, prompt, model):
     """调 OpenAI 兼容接口，返回文本或 None。"""
     body = json.dumps(
         {
-            "model": LLM_MODEL,
+            "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.3,
             "max_tokens": 800,
@@ -163,36 +170,64 @@ def _chat(key, prompt):
             data = json.loads(resp.read().decode("utf-8"))
         return data["choices"][0]["message"]["content"]
     except Exception as exc:
-        print(f"      请求失败：{exc}")
+        print(f"      {model}: {exc}")
         return None
 
 
+def _list_models(key):
+    """全部模型都失败时，把账号实际可用的模型打出来，方便定位。"""
+    try:
+        req = urllib.request.Request(
+            f"{LLM_BASE_URL}/models",
+            headers={"Authorization": f"Bearer {key}"},
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        ids = [m.get("id") for m in data.get("data", []) if m.get("id")]
+        print(f"      可用模型：{', '.join(ids[:25]) or '（空）'}")
+    except Exception as exc:
+        print(f"      获取模型列表也失败了：{exc}")
+
+
 def translate(desc):
-    """一次请求拿到四语言结果；没配 key 或解析失败都返回 None。"""
+    """依次试候选模型，第一个成功的返回；全失败则返回 None。"""
     key = os.environ.get("LLM_API_KEY")
     if not key:
         print("      未配置 LLM_API_KEY，跳过翻译")
         return None
 
-    raw = _chat(key, PROMPT.format(desc=desc))
-    if not raw:
-        return None
+    prompt = PROMPT.format(desc=desc)
+    models = list(LLM_MODELS)
+    override = os.environ.get("LLM_MODEL")
+    if override:
+        models.insert(0, override)
 
-    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
-    try:
-        payload = json.loads(text)
-    except json.JSONDecodeError:
-        print(f"      无法解析响应：{raw[:120]}")
-        return None
+    for model in models:
+        raw = _chat(key, prompt, model)
+        if not raw:
+            continue
 
-    out = {}
-    for code in i18n.LANGS:
-        v = payload.get(code)
-        if not isinstance(v, str) or not v.strip():
-            print(f"      缺少语言 {code}")
-            return None
-        out[code] = re.sub(r"\s+", " ", v).strip()
-    return out
+        text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip()).strip()
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            print(f"      {model} 返回的不是 JSON：{raw[:100]}")
+            continue
+
+        out = {}
+        for code in i18n.LANGS:
+            v = payload.get(code)
+            if not isinstance(v, str) or not v.strip():
+                print(f"      {model} 缺少语言 {code}")
+                out = None
+                break
+            out[code] = re.sub(r"\s+", " ", v).strip()
+        if out:
+            print(f"      使用模型 {model}")
+            return out
+
+    _list_models(key)
+    return None
 
 
 def sync_translations(repos, descs):
