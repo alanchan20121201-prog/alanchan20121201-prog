@@ -34,7 +34,8 @@ OUT_FILE = "README.md"
 EXCLUDE = {USERNAME.lower(), ".github"}
 
 MAX_DESC = 110
-MAX_TRANSLATE_PER_RUN = 5
+# 免费翻译接口的 IP 级限流很敏感，一次只翻一个仓库，剩下的交给后续定时任务慢慢消化
+MAX_TRANSLATE_PER_RUN = 1
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DESC_FILE = os.path.join(HERE, "descriptions.json")
@@ -125,7 +126,7 @@ def save_descriptions(data):
         f.write("\n")
 
 
-def _gtx(text, tl, retries=3):
+def _gtx(text, tl, retries=2):
     """调 Google 翻译公开接口，返回译文；失败返回 None。"""
     url = GTX.format(tl=tl, q=urllib.parse.quote(text))
     for attempt in range(retries):
@@ -142,7 +143,8 @@ def _gtx(text, tl, retries=3):
         except Exception as exc:
             if attempt == retries - 1:
                 print(f"      {tl} 失败：{exc}")
-            time.sleep(1.5 * (attempt + 1))
+            else:
+                time.sleep(5)  # 429 是 IP 级限流，短等即可，长等会拖垮整轮
     return None
 
 
@@ -154,7 +156,7 @@ def translate(desc):
         if not got:
             return None
         out[code] = re.sub(r"\s+", " ", got).strip()
-        time.sleep(0.6)  # 串行限速，避免被 Google 挡掉
+        time.sleep(2)  # 串行限速，避免被 Google 挡掉
     return out
 
 
