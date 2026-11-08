@@ -374,12 +374,15 @@ def build_readme(repos, descs):
         for i, r in enumerate(repos, 1):
             lang = f"`{r['language']}`" if r.get("language") else "—"
             stars = r.get("stargazers_count", 0)
+            # GitHub 对无法识别的授权文件会回 NOASSERTION，这种情况不显示
+            spdx = (r.get("license") or {}).get("spdx_id") or ""
+            lic = f"`{spdx}`" if spdx and spdx != "NOASSERTION" else "—"
             # 优先用已翻译的描述；没有则回落 GitHub 上的原文
             desc = (descs.get(r["name"]) or {}).get(code) or clean_desc(
                 r.get("description")
             )
             rows.append(
-                "| {i} | [{name}]({url}) | {desc} | {lang} | {stars} | {updated} |".format(
+                "| {i} | [{name}]({url}) | {desc} | {lang} | {stars} | {updated} | {lic} |".format(
                     i=i,
                     name=r["name"],
                     url=r["html_url"],
@@ -388,6 +391,7 @@ def build_readme(repos, descs):
                     stars=f"⭐ {stars}" if stars else "—",
                     # 用 pushed_at（代码最后提交）而不是 updated_at（改描述、改设置都会刷新）
                     updated=short_date(r.get("pushed_at") or r.get("updated_at")),
+                    lic=lic,
                 )
             )
 
@@ -396,7 +400,7 @@ def build_readme(repos, descs):
             f'<a id="{code}"></a>\n\n'
             f"## {i18n.LANG_LABEL[code]}\n\n"
             f'{ui["tagline"].format(count=total)}\n\n'
-            f"{header}\n|:-:|:--|:--|:--|:-:|:--|\n" + "\n".join(rows)
+            f"{header}\n|:-:|:--|:--|:--|:-:|:--|:-:|\n" + "\n".join(rows)
         )
 
     sep = "\n\n---\n\n"
