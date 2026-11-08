@@ -2,7 +2,7 @@
 
 # 项目合集 · 專案合集 · Projects · プロジェクト
 
-<a href="#zh-cn">简体中文</a> · <a href="#zh-tw">繁體中文</a> · <a href="#en">English</a> · <a href="#ja">日本語</a>
+<a href="#user-content-zh-cn">简体中文</a> · <a href="#user-content-zh-tw">繁體中文</a> · <a href="#user-content-en">English</a> · <a href="#user-content-ja">日本語</a>
 
 [![Repos](https://img.shields.io/badge/repos-9-blue?style=flat-square)](https://github.com/alanchan20121201-prog?tab=repositories)
 

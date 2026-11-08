@@ -87,8 +87,10 @@ def build_readme(repos):
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     total = len(repos)
 
+    # GitHub 会给 HTML 锚点 id 加上 user-content- 前缀，链接必须照着写
     nav = " · ".join(
-        f'<a href="#{code}">{i18n.LANG_LABEL[code]}</a>' for code in i18n.LANGS
+        f'<a href="#user-content-{code}">{i18n.LANG_LABEL[code]}</a>'
+        for code in i18n.LANGS
     )
 
     blocks = []
