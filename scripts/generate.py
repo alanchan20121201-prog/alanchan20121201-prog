@@ -20,7 +20,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 # 允许从任意工作目录运行本脚本
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -187,8 +187,17 @@ def pick_source(desc):
 
 
 def short_date(iso):
+    """ISO 时间转本地日期（UTC+8）。
+
+    GitHub 返回的是 UTC，直接截日期会让凌晨的提交显示成前一天，所以先转时区。
+    """
     try:
-        return datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
+        return (
+            datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ")
+            .replace(tzinfo=timezone.utc)
+            .astimezone(timezone(timedelta(hours=8)))
+            .strftime("%Y-%m-%d")
+        )
     except (ValueError, TypeError):
         return "—"
 
@@ -377,7 +386,8 @@ def build_readme(repos, descs):
                     desc=cell(desc),
                     lang=lang,
                     stars=f"⭐ {stars}" if stars else "—",
-                    updated=short_date(r.get("updated_at")),
+                    # 用 pushed_at（代码最后提交）而不是 updated_at（改描述、改设置都会刷新）
+                    updated=short_date(r.get("pushed_at") or r.get("updated_at")),
                 )
             )
 
@@ -423,7 +433,8 @@ def main():
         # 一旦上榜就等于把仓库名公开泄露，务必保留这道判断
         and not r.get("private")
     ]
-    repos.sort(key=lambda r: r.get("updated_at") or "", reverse=True)
+    # 与表格里的「最近更新」保持一致，按代码提交时间排
+    repos.sort(key=lambda r: r.get("pushed_at") or r.get("updated_at") or "", reverse=True)
 
     descs = load_descriptions()
 
