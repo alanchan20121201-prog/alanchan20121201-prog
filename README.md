@@ -67,7 +67,7 @@ Self-built tools and experiments · All open source · 11 in total
 | # | Project | Description | Language | Version | Updated |
 |:-:|:--|:--|:--|:-:|:--|
 | 1 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | This is a versatile toolbox. | `JavaScript` | `v1.0.6` | 2026-11-09 |
-| 2 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
+| 2 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | Pixel Art Pet Raising Simulator - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
 | 3 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) `Apache-2.0` | Share text and files between PCs and phones on the same Wi-Fi - no login, no cloud, just open a URL | `Python` | `v1.0.0` | 2026-11-08 |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) `MIT` | Local-only password generator, strength analyzer and secure vault. Bilingual UI, zero uploads | `TypeScript` | `v1.0.0` | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) `MIT` | Minimalist local-first desktop note-taking app (Electron) with built-in trash bin and portable exe | `JavaScript` | `v1.0.0` | 2026-11-08 |
@@ -91,7 +91,7 @@ Self-built tools and experiments · All open source · 11 in total
 | # | プロジェクト | 説明 | 言語 | バージョン | 更新日 |
 |:-:|:--|:--|:--|:-:|:--|
 | 1 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | これは多用途のツールボックスです。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
-| 2 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
+| 2 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | ピクセルアート風ペット養成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
 | 3 | [File-Transfer](https://github.com/alanchan20121201-prog/File-Transfer) `Apache-2.0` | 同じ Wi-Fi 内で PC とスマホ間のテキスト・ファイル転送。ログイン不要、クラウド不要 | `Python` | `v1.0.0` | 2026-11-08 |
 | 4 | [Password-Generator](https://github.com/alanchan20121201-prog/Password-Generator) `MIT` | 完全ローカル動作のパスワード生成・強度分析・保管庫。多言語 UI、データ送信なし | `TypeScript` | `v1.0.0` | 2026-11-08 |
 | 5 | [Note-app](https://github.com/alanchan20121201-prog/Note-app) `MIT` | ミニマルなローカル優先デスクトップメモ帳（Electron）。ゴミ箱機能とポータブル exe 付き | `JavaScript` | `v1.0.0` | 2026-11-08 |

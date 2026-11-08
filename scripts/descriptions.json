@@ -73,9 +73,8 @@
   "PixelPet": {
     "zh-cn": "像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
     "zh-tw": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
-    "en": "Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
-    "ja": "ピクセル風ペット育成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
-    "_source": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
-    "_draft": true
+    "en": "Pixel Art Pet Raising Simulator - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "ja": "ピクセルアート風ペット養成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
+    "_source": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)"
   }
 }
