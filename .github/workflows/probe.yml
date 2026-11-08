@@ -1,0 +1,35 @@
+name: 探针（临时）
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 探测国内 LLM 接口连通性（无 key，看返回码）
+        run: |
+          t() {
+            echo "===== $1 ====="
+            code=$(curl -s -o /tmp/b -w "%{http_code}" --max-time 25 "${@:2}" 2>/dev/null || echo "CONN_FAIL")
+            echo "HTTP $code"
+            head -c 220 /tmp/b 2>/dev/null; echo; echo
+          }
+          B='{"model":"%s","messages":[{"role":"user","content":"hi"}]}'
+
+          t "1 智谱 open.bigmodel.cn" -X POST "https://open.bigmodel.cn/api/paas/v4/chat/completions" \
+            -H "Content-Type: application/json" -d '{"model":"glm-4-flash","messages":[{"role":"user","content":"hi"}]}'
+
+          t "2 硅基流动 api.siliconflow.cn" -X POST "https://api.siliconflow.cn/v1/chat/completions" \
+            -H "Content-Type: application/json" -d '{"model":"Qwen/Qwen2.5-7B-Instruct","messages":[{"role":"user","content":"hi"}]}'
+
+          t "3 DeepSeek api.deepseek.com" -X POST "https://api.deepseek.com/chat/completions" \
+            -H "Content-Type: application/json" -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"hi"}]}'
+
+          t "4 阿里 DashScope" -X POST "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions" \
+            -H "Content-Type: application/json" -d '{"model":"qwen-turbo","messages":[{"role":"user","content":"hi"}]}'
+
+          echo "===== done（401/403 = 网络通、只是缺 key；CONN_FAIL = 连不上）====="
