@@ -107,19 +107,25 @@ def fetch_all_repos():
     return repos
 
 
-# 只认 v1 / v1.2 / v1.2.3 这类；像 windows、exe 这种乱打的 tag 不当版本
-VERSION_RE = re.compile(r"^v?\d+(\.\d+){0,3}$", re.I)
+# release 标题常写成「ClipHist v1.0.0」这类，只截取其中的版本号片段
+VERSION_RE = re.compile(r"v?\d+(?:\.\d+){0,3}", re.I)
 
 
 def fetch_version(full_name):
-    """只认「发布页」的最新正式 release；tag 名不像版本号（如 windows/exe）则忽略。"""
+    """取「发布页」最新正式 release 里的版本号。
+
+    优先看 release 标题（name，常是「项目名 v1.2.3」），再看 tag 名；
+    都找不到版本号片段就返回 None，表格显示「—」。
+    """
     try:
         rel = api_get(f"https://api.github.com/repos/{full_name}/releases/latest")
     except Exception:
         return None  # 没发过 release 会 404，正常
-    tag = ((rel or {}).get("tag_name") or "").strip()
-    if tag and VERSION_RE.match(tag):
-        return tag
+    for cand in (rel.get("name"), rel.get("tag_name")):
+        if cand:
+            m = VERSION_RE.search(str(cand))
+            if m:
+                return m.group()
     return None
 
 
