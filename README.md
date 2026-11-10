@@ -27,7 +27,7 @@
 | 7 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | 像素风宠物养成模拟器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
 | 8 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) `MIT` | 把一句话像水印一样刻在桌面上，永远置顶、鼠标穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | `v1.1.0` | 2026-11-08 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) `MIT` | 极简风格的单文件中英双向翻译网页，支持界面切换、一键复制与快速清空 | `HTML` | — | 2026-11-08 |
-| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言 | `C` | `v1.0.0` | 2026-11-08 |
+| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 轻量级 Windows 剪贴板历史记录工具 - pure Win32, portable single-file exes, ~600KB total, 4 UI languages | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 无边框透明悬浮的倒计时／秒表／番茄钟，四种显示模式、四语言、内置更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
 > 本页同步于：2026-11-11（UTC+8）
@@ -51,7 +51,7 @@
 | 7 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | 像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
 | 8 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) `MIT` | 把一句話像浮水印般刻在桌面上，永遠置頂、滑鼠穿透的 Windows 小工具（.NET 8 + WPF） | `C#` | `v1.1.0` | 2026-11-08 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) `MIT` | 極簡風格的單檔案中英雙向翻譯網頁，支援介面切換、一鍵複製與快速清空 | `HTML` | — | 2026-11-08 |
-| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言 | `C` | `v1.0.0` | 2026-11-08 |
+| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 輕量級 Windows � | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 無邊框透明懸浮的倒數計時／碼錶／番茄鐘，四種顯示模式、四語言、內建更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
 > 本頁同步於：2026-11-11（UTC+8）
@@ -99,7 +99,7 @@ Self-built tools and experiments · All open source · 11 in total
 | 7 | [PixelPet](https://github.com/alanchan20121201-prog/PixelPet) `MIT` | ピクセルアート風ペット養成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages) | `JavaScript` | `v1.0.1` | 2026-11-09 |
 | 8 | [GhostNote](https://github.com/alanchan20121201-prog/GhostNote) `MIT` | テキストを透かしのようにデスクトップに刻む Windows ツール。常に最前面、マウス貫通（.NET 8 + WPF） | `C#` | `v1.1.0` | 2026-11-08 |
 | 9 | [Chinese-English-bilingual-translation](https://github.com/alanchan20121201-prog/Chinese-English-bilingual-translation) `MIT` | ミニマルな単一ファイルの中英双方向翻訳ページ。ワンクリックコピー、クイッククリア対応 | `HTML` | — | 2026-11-08 |
-| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語 | `C` | `v1.0.0` | 2026-11-08 |
+| 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | Windowsの軽量なクリップボード履歴ツール - 純Win32、ポータブル単一ファイルEXE、合計約600KB、4UI言語 | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 枠なし・透明のフローティング式カウントダウン／ストップウォッチ／ポモドーロ。4 表示モード、4 言語、アプリ内更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
 > このページの同期日：2026-11-11（UTC+8）
