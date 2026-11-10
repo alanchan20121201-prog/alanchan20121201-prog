@@ -30,7 +30,7 @@
 | 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 轻量级 Windows 剪贴板历史记录工具 - 纯 Win32，可移植的单文件可执行文件，总大小约 600KB，4 种用户界面语言 | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 无边框透明悬浮的倒计时／秒表／番茄钟，四种显示模式、四语言、内置更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> 本页同步于：2026-11-10（UTC+8）
+> 本页同步于：2026-11-11（UTC+8）
 
 ---
 
@@ -54,7 +54,7 @@
 | 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 輕量級 Windows 複製板歷史記錄工具 - 純 Win32，便携式單一檔案 exes，~600KB 總計，4 UI 語言 | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 無邊框透明懸浮的倒數計時／碼錶／番茄鐘，四種顯示模式、四語言、內建更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> 本頁同步於：2026-11-10（UTC+8）
+> 本頁同步於：2026-11-11（UTC+8）
 
 ---
 
@@ -78,7 +78,7 @@ Self-built tools and experiments · All open source · 11 in total
 | 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | Lightweight Windows clipboard history tool - pure Win32, portable single-file exes, ~600KB total, 4 UI languages | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | Frameless transparent floating countdown / stopwatch / Pomodoro timer. Four display modes, four languages, in-app updates | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> Page synced on：2026-11-10（UTC+8）
+> Page synced on：2026-11-11（UTC+8）
 
 ---
 
@@ -102,7 +102,7 @@ Self-built tools and experiments · All open source · 11 in total
 | 10 | [ClipHist](https://github.com/alanchan20121201-prog/ClipHist) `MIT` | 軽量なWindowsクリップボード履歴ツール - 純正Win32、ポータブル単一ファイル実行ファイル、約600KB全体、4種類のUI言語 | `C` | `v1.0.0` | 2026-11-08 |
 | 11 | [nanotimer](https://github.com/alanchan20121201-prog/nanotimer) `MIT` | 枠なし・透明のフローティング式カウントダウン／ストップウォッチ／ポモドーロ。4 表示モード、4 言語、アプリ内更新 | `JavaScript` | `v1.1.8` | 2026-11-07 |
 
-> このページの同期日：2026-11-10（UTC+8）
+> このページの同期日：2026-11-11（UTC+8）
 
 ---
 
