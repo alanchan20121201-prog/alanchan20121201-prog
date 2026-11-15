@@ -75,5 +75,13 @@
     "en": "Pixel Art Pet Raising Simulator - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
     "ja": "ピクセルアート風ペット養成シミュレーター - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)",
     "_source": "像素風寵物養成模擬器 - Pixel Art Pet Raising Simulator (HTML/CSS/JS + C# WebView2, 4 languages)"
+  },
+  "corpus-canvas": {
+    "zh-cn": "资料画布 - 一份资料，多种画法。本地优先的思维导图，以语料库为事实来源。",
+    "zh-tw": "Corpus Canvas - 一份資料，多種畫法。Local-first mind mapping with a corpus as the source of truth.",
+    "en": "Corpus Canvas - One source, multiple ways to draw. Local-first mind mapping with a corpus as the source of truth.",
+    "ja": "Corpus Canvas - 一つの資料、複数の表現方法。ローカルファーストのマインドマップで、コーパスを真実の源とする。",
+    "_source": "Corpus Canvas - 一份资料，多种画法。Local-first mind mapping with a corpus as the source of truth.",
+    "_draft": true
   }
 }
