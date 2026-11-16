@@ -18,7 +18,7 @@
 
 | # | 项目 | 说明 | 语言 | 版本 | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | 资料画布 - 一份资料，多种画法。本地优先的思维导图，以语料库为事实来源。 | `JavaScript` | `1.4.5` | 2026-11-16 |
+| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | 资料画布 - 一份资料，多种画法。本地优先的思维导图，以语料库为事实来源。 | `JavaScript` | `1.5.0` | 2026-11-16 |
 | 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | 这是一个多功能工具箱。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
 | 3 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) `MIT` | 用 AI 制作的游戏 | `C#` | `v0.4.0` | 2026-11-09 |
 | 4 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Windows 托盘小工具：Ctrl+Alt+L 一键把指定窗口锁定置顶，带高亮边框 | `C#` | `v1.0.0` | 2026-11-09 |
@@ -43,7 +43,7 @@
 
 | # | 專案 | 說明 | 語言 | 版本 | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一份資料，多種畫法。Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.4.5` | 2026-11-16 |
+| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一份資料，多種畫法。Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.5.0` | 2026-11-16 |
 | 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | 這是一個多功能工具箱。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
 | 3 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) `MIT` | 用 AI 製作的遊戲 | `C#` | `v0.4.0` | 2026-11-09 |
 | 4 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Windows 托盤小工具：Ctrl+Alt+L 一鍵把指定視窗鎖定置頂，帶高亮邊框 | `C#` | `v1.0.0` | 2026-11-09 |
@@ -68,7 +68,7 @@ Self-built tools and experiments · All open source · 12 in total
 
 | # | Project | Description | Language | Version | Updated |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - One source, multiple ways to draw. Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.4.5` | 2026-11-16 |
+| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - One source, multiple ways to draw. Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.5.0` | 2026-11-16 |
 | 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | This is a versatile toolbox. | `JavaScript` | `v1.0.6` | 2026-11-09 |
 | 3 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) `MIT` | A game built with AI | `C#` | `v0.4.0` | 2026-11-09 |
 | 4 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | Tray utility — press Ctrl+Alt+L to pin any window on top, with a highlight border | `C#` | `v1.0.0` | 2026-11-09 |
@@ -93,7 +93,7 @@ Self-built tools and experiments · All open source · 12 in total
 
 | # | プロジェクト | 説明 | 言語 | バージョン | 更新日 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一つの資料、複数の表現方法。ローカルファーストのマインドマップで、コーパスを真実の源とする。 | `JavaScript` | `1.4.5` | 2026-11-16 |
+| 1 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一つの資料、複数の表現方法。ローカルファーストのマインドマップで、コーパスを真実の源とする。 | `JavaScript` | `1.5.0` | 2026-11-16 |
 | 2 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | これは多用途のツールボックスです。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
 | 3 | [CoreFactory](https://github.com/alanchan20121201-prog/CoreFactory) `MIT` | AI を使って制作したゲーム | `C#` | `v0.4.0` | 2026-11-09 |
 | 4 | [TopMostPin](https://github.com/alanchan20121201-prog/TopMostPin) `Apache-2.0` | 常駐ツール。Ctrl+Alt+L で任意のウィンドウを最前面に固定、ハイライト枠付き | `C#` | `v1.0.0` | 2026-11-09 |
