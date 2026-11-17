@@ -31,7 +31,7 @@ USERNAME = "alanchan20121201-prog"
 OUT_FILE = "README.md"
 
 # 这些仓库不上榜：profile 仓库自身、以及其他你不想展示的
-EXCLUDE = {USERNAME.lower(), ".github"}
+EXCLUDE = {USERNAME.lower(), ".github", USERNAME.lower() + ".github.io"}
 
 MAX_DESC = 110
 # 一次跑只翻一个仓库，避免拖长任务耗时（失败的下次定时任务会重试）
