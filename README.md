@@ -18,7 +18,7 @@
 
 | # | 项目 | 说明 | 语言 | 版本 | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.6.0` | 2026-11-28 |
+| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.7.0` | 2026-11-28 |
 | 2 | [alan.github.io](https://github.com/alanchan20121201-prog/alan.github.io) | — | `JavaScript` | — | 2026-11-18 |
 | 3 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | 资料画布 - 一份资料，多种画法。本地优先的思维导图，以语料库为事实来源。 | `JavaScript` | `1.5.8` | 2026-11-17 |
 | 4 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | 这是一个多功能工具箱。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
@@ -45,7 +45,7 @@
 
 | # | 專案 | 說明 | 語言 | 版本 | 最近更新 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.6.0` | 2026-11-28 |
+| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.7.0` | 2026-11-28 |
 | 2 | [alan.github.io](https://github.com/alanchan20121201-prog/alan.github.io) | — | `JavaScript` | — | 2026-11-18 |
 | 3 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一份資料，多種畫法。Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.5.8` | 2026-11-17 |
 | 4 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | 這是一個多功能工具箱。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
@@ -72,7 +72,7 @@ Self-built tools and experiments · All open source · 14 in total
 
 | # | Project | Description | Language | Version | Updated |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.6.0` | 2026-11-28 |
+| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.7.0` | 2026-11-28 |
 | 2 | [alan.github.io](https://github.com/alanchan20121201-prog/alan.github.io) | — | `JavaScript` | — | 2026-11-18 |
 | 3 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - One source, multiple ways to draw. Local-first mind mapping with a corpus as the source of truth. | `JavaScript` | `1.5.8` | 2026-11-17 |
 | 4 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | This is a versatile toolbox. | `JavaScript` | `v1.0.6` | 2026-11-09 |
@@ -99,7 +99,7 @@ Self-built tools and experiments · All open source · 14 in total
 
 | # | プロジェクト | 説明 | 言語 | バージョン | 更新日 |
 |:-:|:--|:--|:--|:-:|:--|
-| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.6.0` | 2026-11-28 |
+| 1 | [kotoba-dojo](https://github.com/alanchan20121201-prog/kotoba-dojo) | 日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁 | `Python` | `v1.7.0` | 2026-11-28 |
 | 2 | [alan.github.io](https://github.com/alanchan20121201-prog/alan.github.io) | — | `JavaScript` | — | 2026-11-18 |
 | 3 | [corpus-canvas](https://github.com/alanchan20121201-prog/corpus-canvas) `MIT` | Corpus Canvas - 一つの資料、複数の表現方法。ローカルファーストのマインドマップで、コーパスを真実の源とする。 | `JavaScript` | `1.5.8` | 2026-11-17 |
 | 4 | [Toolbox](https://github.com/alanchan20121201-prog/Toolbox) `MIT` | これは多用途のツールボックスです。 | `JavaScript` | `v1.0.6` | 2026-11-09 |
