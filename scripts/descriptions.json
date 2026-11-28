@@ -83,5 +83,13 @@
     "ja": "Corpus Canvas - 一つの資料、複数の表現方法。ローカルファーストのマインドマップで、コーパスを真実の源とする。",
     "_source": "Corpus Canvas - 一份资料，多种画法。Local-first mind mapping with a corpus as the source of truth.",
     "_draft": true
+  },
+  "kotoba-dojo": {
+    "zh-cn": "日语单词练习器：汉字标假名、四选一、间隔重复、单词簿，含可离线使用的手机版网页",
+    "zh-tw": "日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁",
+    "en": "Japanese Kanji Practice Tool: Kanji with Reading, Multiple Choice (4 options), Interval Repetition, Vocabulary List, includes a mobile web version for offline use",
+    "ja": "日本語単語練習器：漢字標仮名、四選一、間隔重複、単字帳、含むオフライン利用可能なモバイル版ウェブページ",
+    "_source": "日語單字練習器：漢字標假名、四選一、間隔重複、單字簿，含可離線使用的手機版網頁",
+    "_draft": true
   }
 }
